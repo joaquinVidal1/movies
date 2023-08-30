@@ -6,6 +6,6 @@ import com.example.movies.model.Movie
 
 @Composable
 fun MoviePresentation(
-    movie: Movie,
-    modifier: Modifier = Modifier){
+    movie: Movie, modifier: Modifier = Modifier
+) {
 }
