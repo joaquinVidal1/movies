@@ -88,9 +88,40 @@ dependencies {
     //Hilt for di
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+
+    // retrofit for networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    // moshi for parsing the JSON format
+    val moshi_version = "1.8.0"
+    implementation("com.squareup.moshi:moshi:$moshi_version")
+    implementation("com.squareup.moshi:moshi-kotlin:$moshi_version")
+
+    //okHttp for logging networking
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
 }
 
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+}
+
+android {
+    buildFeatures {
+        buildConfig = true
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+        }
+        getByName("debug") {
+            isDebuggable = true
+        }
+    }
 }
