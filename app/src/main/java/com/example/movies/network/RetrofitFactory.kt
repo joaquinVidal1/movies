@@ -37,4 +37,4 @@ object RetrofitFactory {
     }
 }
 
-const val BASE_URL = "https://api.penca.inhouse.decemberlabs.com"
+const val BASE_URL = "https://api.themoviedb.org/3/"
