@@ -88,6 +88,10 @@ dependencies {
     //Hilt for di
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
+
+
 
     // retrofit for networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

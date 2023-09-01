@@ -1,4 +1,4 @@
-package com.example.movies.home.components
+package com.example.movies.ui.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -76,6 +76,7 @@ fun MoviePresentationPreview() {
         releaseDate = LocalDate.parse("2023-08-02"),
         voteAverage = 6.9,
         poster = "/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg",
+        savedTimeStamp = System.currentTimeMillis()
     )
     Surface(color = MaterialTheme.colorScheme.surface) {
         MovieCover(

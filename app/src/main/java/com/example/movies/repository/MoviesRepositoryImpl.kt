@@ -11,19 +11,19 @@ import javax.inject.Singleton
 @Singleton
 class MoviesRepositoryImpl @Inject constructor(
     private val moviesDao: MoviesDao, private val moviesService: MoviesService
-) {
+) : MoviesRepository {
 
-    val movies: Flow<List<Movie>> = moviesDao.getMovies()
+    override val movies: Flow<List<Movie>> = moviesDao.getMovies()
 
     @Transaction
-    suspend fun updateMovies() {
+    override suspend fun updateMovies() {
         val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
         moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
         val newMovies = moviesService.getMovies(page = 1).map { it.toLocalModel() }
         moviesDao.insertMovies(newMovies)
     }
 
-    suspend fun getMoreMovies(page: Int) {
+    override suspend fun getMoreMovies(page: Int) {
         val newMovies = moviesService.getMovies(page = page).map { it.toLocalModel() }
         moviesDao.insertMovies(newMovies)
     }

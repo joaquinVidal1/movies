@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.movies.ui.home.HomeScreen
 import com.example.movies.ui.theme.MoviesTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,10 +36,12 @@ fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
         NavHost(
-            navController = navController,
-            startDestination = Home.route,
-            modifier = Modifier.padding(8.dp)
-        ) {}
+            navController = navController, startDestination = Home.route, modifier = Modifier.padding(8.dp)
+        ) {
+            composable(route = Home.route) {
+                HomeScreen(onMoviePressed = { navController.navigate(MovieDetails.route) })
+            }
+        }
     }
 }
 
