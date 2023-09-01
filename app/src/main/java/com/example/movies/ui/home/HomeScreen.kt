@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.model.Movie
 import com.example.movies.ui.home.components.MovieCover
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
@@ -21,9 +23,11 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
     val movies by viewModel.movies.collectAsState(initial = emptyList())
 
-    LaunchedEffect(key1 = LocalDate.now().dayOfMonth,
-        key2 = LocalDate.now().month,
-        block = { viewModel.updateMovies() })
+    LaunchedEffect(key1 = LocalDate.now().dayOfMonth, key2 = LocalDate.now().month, block = {
+        withContext(Dispatchers.IO) {
+            viewModel.updateMovies()
+        }
+    })
 
     LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 100.dp), modifier = Modifier.fillMaxSize()) {
         items(items = movies) { movie ->

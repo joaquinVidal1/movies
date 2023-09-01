@@ -1,6 +1,7 @@
 package com.example.movies.network
 
 import com.example.movies.network.model.ApiMovie
+import com.example.movies.network.model.ApiPaginatedResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,7 +12,7 @@ interface MoviesService {
         @Query("include_video") includeVideo: Boolean = false,
         @Query("language") language: String = "en-US",
         @Query("page") page: Int
-    ): List<ApiMovie>
+    ): ApiPaginatedResponse<ApiMovie>
 
 
     companion object {

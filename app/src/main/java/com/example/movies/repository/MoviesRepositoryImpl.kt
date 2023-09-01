@@ -19,12 +19,12 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun updateMovies() {
         val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
         moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
-        val newMovies = moviesService.getMovies(page = 1).map { it.toLocalModel() }
+        val newMovies = moviesService.getMovies(page = 1).results.map { it.toLocalModel() }
         moviesDao.insertMovies(newMovies)
     }
 
     override suspend fun getMoreMovies(page: Int) {
-        val newMovies = moviesService.getMovies(page = page).map { it.toLocalModel() }
+        val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
         moviesDao.insertMovies(newMovies)
     }
 
