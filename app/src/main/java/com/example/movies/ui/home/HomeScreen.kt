@@ -1,5 +1,6 @@
 package com.example.movies.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,14 +21,13 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
     val movies by viewModel.movies.collectAsState(initial = emptyList())
 
-    LaunchedEffect(
-        key1 = LocalDate.now().dayOfMonth,
+    LaunchedEffect(key1 = LocalDate.now().dayOfMonth,
         key2 = LocalDate.now().month,
         block = { viewModel.updateMovies() })
 
     LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 100.dp), modifier = Modifier.fillMaxSize()) {
         items(items = movies) { movie ->
-            MovieCover(movie = movie)
+            MovieCover(movie = movie, modifier = Modifier.clickable { onMoviePressed(movie) })
         }
 
     }

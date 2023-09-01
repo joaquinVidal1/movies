@@ -7,10 +7,14 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}
 
 android {
     namespace = "com.example.movies"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.movies"
@@ -25,15 +29,19 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
+//    buildTypes {
+//        release {
+//            isMinifyEnabled = false
+//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+//        }
+//        debug {
+//            signingConfig = signingConfigs.getByName("debug")
+//        }
+//    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -49,6 +57,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -92,7 +101,6 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
 
 
-
     // retrofit for networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
@@ -108,24 +116,4 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-}
-
-android {
-    buildFeatures {
-        buildConfig = true
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-        }
-        getByName("debug") {
-            isDebuggable = true
-        }
-    }
 }

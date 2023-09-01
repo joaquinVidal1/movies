@@ -11,15 +11,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitFactory {
     fun getBuilder(
-        getToken: () -> String?
     ): Retrofit {
         val client = OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
             // Request
-            val token = getToken.invoke()
             val requestBuilder = chain.request().newBuilder()
-            if (token != null) {
-                requestBuilder.addHeader("AUTHORIZATION", "Bearer $token")
-            }
+            requestBuilder.addHeader("AUTHORIZATION", "Bearer $API_TOKEN")
             val response = chain.proceed(requestBuilder.build())
             response
         })
@@ -38,3 +34,5 @@ object RetrofitFactory {
 }
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
+const val API_TOKEN =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MzJjZjJkODNhNjdhZjY1MDZjMjBjMzIxNGViZjgyNyIsInN1YiI6IjY0ZWY4NjQ0Y2FhNTA4MDEyYjA1Y2E1NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Yx3Rz_WnobciXDr0i8YE5YEqR5Nrlggf8yf2Npapqzg"
