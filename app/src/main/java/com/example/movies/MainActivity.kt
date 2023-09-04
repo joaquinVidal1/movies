@@ -39,10 +39,12 @@ fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
         NavHost(
-            navController = navController, startDestination = Home.route, modifier = Modifier.padding(8.dp)
+            navController = navController, startDestination = Home.route
         ) {
             composable(route = Home.route) {
-                HomeScreen(onMoviePressed = { navController.navigate(MovieDetails.route) })
+                HomeScreen(onMoviePressed = {
+//                    navController.navigate(MovieDetails.route)
+                })
             }
         }
     }

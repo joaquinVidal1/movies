@@ -1,7 +1,6 @@
 package com.example.movies.network.model
 
 import com.example.movies.model.Movie
-import com.example.movies.network.BASE_URL
 import com.example.movies.utils.DateUtils.fromBackendDateToLocalDate
 import com.squareup.moshi.Json
 
@@ -28,6 +27,8 @@ data class ApiMovie(
         savedTimeStamp = System.currentTimeMillis(),
         releaseDate = releaseDate.fromBackendDateToLocalDate(),
         voteAverage = voteAverage,
-        poster = BASE_URL + posterPath,
+        poster = MOVIE_IMAGE_BASE_URL + posterPath,
     )
 }
+
+const val MOVIE_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w200"

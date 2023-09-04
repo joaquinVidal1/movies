@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,10 +32,13 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
         modifier = modifier, contentAlignment = Alignment.BottomStart
     ) {
         Image(
-            painter = rememberAsyncImagePainter(movie.poster),
+            painter = rememberAsyncImagePainter(
+                movie.poster,
+                placeholder = painterResource(id = R.drawable.movieplaceholder)
+            ),
             contentDescription = stringResource(R.string.movie_poster),
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
         Column(
@@ -45,13 +50,15 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
             Text(
                 text = movie.releaseDate.year.toString(),
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Thin,
+                color = Color.White,
             )
 
             Text(
                 text = movie.title,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
         Text(
@@ -63,6 +70,7 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
                 .padding(end = 16.dp, top = 32.dp)
         )
     }
+
 }
 
 
