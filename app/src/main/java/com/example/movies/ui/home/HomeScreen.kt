@@ -1,6 +1,5 @@
 package com.example.movies.ui.home
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +38,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.model.Movie
 import com.example.movies.ui.home.components.MovieCover
-import java.time.LocalDate
 
 @Composable
 fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
@@ -55,7 +53,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             val totalItems = layoutInfo.totalItemsCount
             val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
             val value = (lastVisibleItemIndex > (totalItems - buffer)) && (totalItems > 1)
-            Log.d("juacoComposeDebug", "loadMore value recalculated: $value")
             value
         }
     }
@@ -67,10 +64,8 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     }
 
     LaunchedEffect(key1 = loadMore, block = {
-        Log.d("juacoComposeDebug", "load more changed, entered launchedEffect")
         if (loadMore) {
             viewModel.getMoreMovies()
-            Log.d("juacoComposeDebug", "load more movies called")
         }
     })
 

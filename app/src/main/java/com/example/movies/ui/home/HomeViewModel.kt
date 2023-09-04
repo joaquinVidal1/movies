@@ -1,6 +1,5 @@
 package com.example.movies.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.repository.MoviesRepository
@@ -33,7 +32,6 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     }
 
     suspend fun updateMovies() {
-        Log.d("juacoComposeDebug", "update movies called")
         try {
             moviesRepository.updateMovies()
         } catch (e: Exception) {
