@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,7 +39,7 @@ import java.time.LocalDate
 @Composable
 fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier, contentAlignment = Alignment.BottomStart
+        modifier = modifier.wrapContentSize(), contentAlignment = Alignment.BottomStart
     ) {
         Image(
             painter = rememberAsyncImagePainter(
