@@ -1,10 +1,12 @@
 package com.example.movies.ui.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -12,11 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +42,7 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                movie.poster,
-                placeholder = painterResource(id = R.drawable.movieplaceholder)
+                movie.poster, placeholder = painterResource(id = R.drawable.movieplaceholder)
             ),
             contentDescription = stringResource(R.string.movie_poster),
             modifier = Modifier.fillMaxSize(),
@@ -44,30 +52,25 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 32.dp)
+                .padding(start = 8.dp, bottom = 16.dp)
         ) {
 
             Text(
                 text = movie.releaseDate.year.toString(),
-                fontSize = 16.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Thin,
                 color = Color.White,
             )
 
             Text(
-                text = movie.title,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                text = movie.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White
             )
         }
-        Text(
+        DecimalText(
             text = movie.voteAverage.toString(),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(end = 16.dp, top = 32.dp)
+                .padding(end = 4.dp, top = 4.dp)
         )
     }
 
@@ -91,6 +94,44 @@ fun MoviePresentationPreview() {
             movie = movie, modifier = Modifier
                 .fillMaxSize()
                 .shadow(8.dp)
+        )
+    }
+}
+
+@Composable
+fun DecimalText(text: String, modifier: Modifier = Modifier) {
+    val parts = text.split(".")
+    val integerPart = parts[0]
+    val fractionalPart = if (parts.size > 1) parts[1] else "0"
+
+    val text = buildAnnotatedString {
+        withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+            append(integerPart)
+        }
+        withStyle(
+            style = SpanStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Light,
+                baselineShift = BaselineShift.Superscript,
+                color = Color.White
+            )
+        ) {
+            append(".$fractionalPart")
+        }
+    }
+    Box(
+        modifier = modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(colorResource(id = R.color.orange), Color.Magenta)
+                ), shape = CircleShape
+            )
+            .padding(2.dp), contentAlignment = Alignment.Center
+
+
+    ) {
+        Text(
+            text = text, textAlign = TextAlign.End
         )
     }
 }
