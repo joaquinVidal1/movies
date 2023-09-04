@@ -1,10 +1,11 @@
 package com.example.movies.ui.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,7 +47,9 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp, start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         item(span = { GridItemSpan(maxCurrentLineSpan) }, content = {
@@ -57,17 +59,18 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
                 fontSize = 32.sp,
                 textAlign = TextAlign.Start,
                 color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier.padding(top = 8.dp),
             )
         })
 
-        items(items = movies) { movie ->
+        items(items = movies, key = { movie -> movie.id }) { movie ->
             MovieCover(movie = movie,
                 modifier = Modifier
+                    .size(250.dp)
                     .clickable { onMoviePressed(movie) }
+                    .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
                     .clip(RoundedCornerShape(8.dp))
-                    .shadow(2.dp)
-                    .wrapContentSize())
+            )
         }
 
     }

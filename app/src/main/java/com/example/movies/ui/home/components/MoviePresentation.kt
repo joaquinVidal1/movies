@@ -39,14 +39,17 @@ import java.time.LocalDate
 @Composable
 fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.wrapContentSize(), contentAlignment = Alignment.BottomStart
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomStart
     ) {
         Image(
             painter = rememberAsyncImagePainter(
                 movie.poster, placeholder = painterResource(id = R.drawable.movieplaceholder)
             ),
             contentDescription = stringResource(R.string.movie_poster),
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize(),
             contentScale = ContentScale.Crop,
         )
 
@@ -64,7 +67,7 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = movie.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White
+                text = movie.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White
             )
         }
         DecimalText(
