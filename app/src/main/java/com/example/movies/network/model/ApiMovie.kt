@@ -12,7 +12,7 @@ data class ApiMovie(
     val title: String,
     @Json(name = "genre_ids") val genreIds: List<Int>,
     @Json(name = "poster_path") val posterPath: String,
-    @Json(name = "backdrop_path") val backdropPath: String,
+    @Json(name = "backdrop_path") val backdropPath: String?,
     @Json(name = "release_date") val releaseDate: String,
     val popularity: Double,
     @Json(name = "vote_average") val voteAverage: Double,

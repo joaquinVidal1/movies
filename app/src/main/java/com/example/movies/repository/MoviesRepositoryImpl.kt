@@ -4,7 +4,9 @@ import androidx.room.Transaction
 import com.example.movies.db.MoviesDao
 import com.example.movies.model.Movie
 import com.example.movies.network.MoviesService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,15 +19,19 @@ class MoviesRepositoryImpl @Inject constructor(
 
     @Transaction
     override suspend fun updateMovies() {
-        val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
-        moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
-        val newMovies = moviesService.getMovies(page = 1).results.map { it.toLocalModel() }
-        moviesDao.insertMovies(newMovies)
+        withContext(Dispatchers.IO) {
+            val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
+            moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
+            val newMovies = moviesService.getMovies(page = 1).results.map { it.toLocalModel() }
+            moviesDao.insertMovies(newMovies)
+        }
     }
 
     override suspend fun getMoreMovies(page: Int) {
-        val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
-        moviesDao.insertMovies(newMovies)
+        withContext(Dispatchers.IO) {
+            val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
+            moviesDao.insertMovies(newMovies)
+        }
     }
 
 }
