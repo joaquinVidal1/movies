@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,11 +42,14 @@ fun MoviesApp() {
         ) {
             composable(route = Home.route) {
                 HomeScreen(onMoviePressed = {
-                    navController.navigate(MovieDetails.route)
+                    navController.navigateToMovieDetails(it.id)
                 })
             }
-            composable(route = MovieDetails.route) {
-                MovieDetailsScreen()
+            composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { navBackStackEntry ->
+                val movieId = navBackStackEntry.arguments?.getInt(MovieDetails.movieIdArg)
+                MovieDetailsScreen(
+                    movieId = movieId ?: throw IllegalStateException("Cannot acces details screen with empty id")
+                )
             }
         }
     }
@@ -57,4 +61,8 @@ fun GreetingPreview() {
     MoviesTheme {
         MoviesApp()
     }
+}
+
+private fun NavHostController.navigateToMovieDetails(movieId: Int) {
+    this.navigate("${MovieDetails.route}/$movieId")
 }

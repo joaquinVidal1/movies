@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 @Entity
 data class Movie(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: Int,
     val title: String,
     val overview: String,
     val voteAverage: Double,

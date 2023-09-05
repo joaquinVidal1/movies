@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
     val movies: Flow<List<Movie>>
+
     @Transaction
     suspend fun updateMovies()
+
     suspend fun getMoreMovies(page: Int)
 }

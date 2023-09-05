@@ -13,6 +13,6 @@ fun MovieDetailsScreen(movieId: Int){
 
 @Composable
 fun MovieData(movie: DetailsMovie){
-    Text(text = )
+//    Text(text = )
 
 }

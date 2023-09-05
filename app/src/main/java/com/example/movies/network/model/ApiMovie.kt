@@ -21,7 +21,7 @@ data class ApiMovie(
     @Json(name = "vote_count") val voteCount: Int
 ) {
     fun toLocalModel(): Movie = Movie(
-        id = id.toString(),
+        id = id,
         title = title,
         overview = overview,
         savedTimeStamp = System.currentTimeMillis(),
