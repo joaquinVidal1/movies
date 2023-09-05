@@ -1,5 +1,6 @@
 package com.example.movies.ui.home
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,11 +18,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +51,12 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     val context = LocalContext.current
     val isLoading by viewModel.isLoading.collectAsState(true)
     val listState = rememberLazyGridState()
+    var scrollState by rememberSaveable { mutableStateOf(Pair(0, 0)) }
+    val shouldScroll by remember {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.isNotEmpty()
+        }
+    }
 
     val loadMore by remember {
         derivedStateOf {
@@ -68,6 +79,13 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             viewModel.getMoreMovies()
         }
     })
+
+    DisposableEffect(Unit) {
+        onDispose {
+            Log.d("juacoCompose", "saving scroll state ${listState.firstVisibleItemIndex}")
+            scrollState = Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset)
+        }
+    }
 
     Box(contentAlignment = Alignment.BottomCenter) {
 
@@ -111,4 +129,10 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             )
         }
     }
+
+    LaunchedEffect(shouldScroll) {
+        Log.d("juacoCompose", "scrollingo to item: $scrollState")
+        listState.scrollToItem(index = scrollState.first, scrollOffset = scrollState.second)
+    }
+
 }
