@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.model.Movie
+import com.example.movies.ui.components.VoteDecimalText
 import java.time.LocalDate
 
 
@@ -69,11 +70,17 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
                 text = movie.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White
             )
         }
-        DecimalText(
+        VoteDecimalText(
             text = movie.voteAverage.toString(),
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(end = 4.dp, top = 4.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(colorResource(id = R.color.orange), Color.Magenta)
+                    ), shape = CircleShape
+                )
+                .padding(2.dp)
         )
     }
 
@@ -97,44 +104,6 @@ fun MoviePresentationPreview() {
             movie = movie, modifier = Modifier
                 .fillMaxSize()
                 .shadow(8.dp)
-        )
-    }
-}
-
-@Composable
-fun DecimalText(text: String, modifier: Modifier = Modifier) {
-    val parts = text.split(".")
-    val integerPart = parts[0]
-    val fractionalPart = if (parts.size > 1) parts[1] else "0"
-
-    val text = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
-            append(integerPart)
-        }
-        withStyle(
-            style = SpanStyle(
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Light,
-                baselineShift = BaselineShift.Superscript,
-                color = Color.White
-            )
-        ) {
-            append(".$fractionalPart")
-        }
-    }
-    Box(
-        modifier = modifier
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(colorResource(id = R.color.orange), Color.Magenta)
-                ), shape = CircleShape
-            )
-            .padding(2.dp), contentAlignment = Alignment.Center
-
-
-    ) {
-        Text(
-            text = text, textAlign = TextAlign.End
         )
     }
 }

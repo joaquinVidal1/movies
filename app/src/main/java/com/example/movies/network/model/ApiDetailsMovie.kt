@@ -30,15 +30,16 @@ data class ApiDetailsMovie(
     @Json(name = "homepage") val homepage: String,
     @Json(name = "status") val status: String
 ) {
-//    fun toModel(): DetailsMovie {
-//        return DetailsMovie(
-//            title = title,
-//            genres = genres,
-//            overview = overview,
-//            voteAverage = voteAverage,
-//            peopleWatching = popularity.toString().replace(".", "").toInt(),
-//            posterPath = MOVIE_IMAGE_BASE_URL + posterPath,
-//            videoPreviewPath = MOVIE_IMAGE_BASE_URL + backdropPath,
-//        )
-//    }
+    fun toModel(): DetailsMovie {
+        return DetailsMovie(
+            id = id,
+            title = title,
+            genres = genres,
+            overview = overview,
+            voteAverage = voteAverage,
+            peopleWatching = popularity.toString().replace(".", "").toInt(),
+            posterPath = MOVIE_IMAGE_BASE_URL + posterPath,
+            videoPreviewPath = MOVIE_IMAGE_BASE_URL + backdropPath,
+        )
+    }
 }

@@ -40,11 +40,13 @@ fun MoviesApp() {
         NavHost(
             navController = navController, startDestination = Home.route
         ) {
+
             composable(route = Home.route) {
                 HomeScreen(onMoviePressed = {
                     navController.navigateToMovieDetails(it.id)
                 })
             }
+
             composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getInt(MovieDetails.movieIdArg)
                 MovieDetailsScreen(
