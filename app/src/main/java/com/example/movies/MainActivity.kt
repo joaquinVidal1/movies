@@ -50,7 +50,8 @@ fun MoviesApp() {
             composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getInt(MovieDetails.movieIdArg)
                 MovieDetailsScreen(
-                    movieId = movieId ?: throw IllegalStateException("Cannot acces details screen with empty id")
+                    movieId = movieId ?: throw IllegalStateException("Cannot acces details screen with empty id"),
+                    onBackPressed = { navController.navigateUp() }
                 )
             }
         }
