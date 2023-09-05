@@ -1,7 +1,9 @@
 package com.example.movies.repository
 
 import androidx.room.Transaction
+import com.example.movies.MovieDetails
 import com.example.movies.db.MoviesDao
+import com.example.movies.model.DetailsMovie
 import com.example.movies.model.Movie
 import com.example.movies.network.MoviesService
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,10 @@ class MoviesRepositoryImpl @Inject constructor(
             val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
             moviesDao.insertMovies(newMovies)
         }
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): DetailsMovie {
+        return moviesService.getMovieDetails(movieId).toModel()
     }
 
 }
