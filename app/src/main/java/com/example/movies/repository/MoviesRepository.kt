@@ -6,12 +6,11 @@ import com.example.movies.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
-    val movies: Flow<List<Movie>>
 
     @Transaction
-    suspend fun updateMovies()
+    suspend fun updateMovies(): List<Movie>
 
-    suspend fun getMoreMovies(page: Int)
+    suspend fun getMoreMovies(page: Int): List<Movie>
 
     suspend fun getMovieDetails(movieId: Int): DetailsMovie
 }

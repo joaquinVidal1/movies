@@ -4,51 +4,45 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepository):
+    ViewModel() {
 
-    val movies = moviesRepository.movies
+  private var currentPage = 0
 
-    private var currentPage = 1
+  private val _uiStateFlow = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+  val uiStateFlow: StateFlow<HomeUiState> = _uiStateFlow
 
-    private val _systemMessage = MutableSharedFlow<String>(extraBufferCapacity = 1)
-    val systemMessage = _systemMessage.asSharedFlow()
+  init {
+    updateMovies()
+  }
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: Flow<Boolean> = _isLoading.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            updateMovies()
-        }
+  private fun updateMovies() {
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        val movies = moviesRepository.updateMovies()
+        _uiStateFlow.emit(HomeUiState.Success(movies))
+      } catch (e: Exception) {
+        _uiStateFlow.emit(HomeUiState.Error(e))
+      }
     }
+  }
 
-    suspend fun updateMovies() {
-        try {
-            moviesRepository.updateMovies()
-        } catch (e: Exception) {
-            e.message?.let { _systemMessage.emit(it) }
-        }
-        _isLoading.value = false
+  suspend fun getMoreMovies() {
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        currentPage++
+        val newMovies = moviesRepository.getMoreMovies(currentPage)
+        _uiStateFlow.emit(HomeUiState.Success(newMovies))
+      } catch (e: Exception) {
+        _uiStateFlow.emit(HomeUiState.Error(e))
+      }
     }
-
-    suspend fun getMoreMovies() {
-        _isLoading.value = true
-        try {
-            currentPage++
-            moviesRepository.getMoreMovies(currentPage)
-        } catch (e: Exception) {
-            e.message?.let { _systemMessage.emit(it) }
-        }
-        _isLoading.value = false
-    }
-
+  }
 }
