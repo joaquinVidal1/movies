@@ -6,7 +6,7 @@ class DetailsMovie(
     val id: Int,
     val title: String,
     val peopleWatching: Int,
-    val genres: List<Genre>,
+    val genres: List<String>,
     val voteAverage: Float,
     val overview: String,
     val posterPath: String,

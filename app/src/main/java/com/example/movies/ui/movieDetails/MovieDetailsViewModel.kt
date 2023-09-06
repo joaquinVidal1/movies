@@ -18,13 +18,12 @@ class MovieDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-    private val _posterPath = MutableSharedFlow<String>(extraBufferCapacity = 1)
-    val posterPath: Flow<String> get() = _posterPath
+    private val _movie = MutableSharedFlow<DetailsMovie>(extraBufferCapacity = 1)
+    val movie: Flow<DetailsMovie> get() = _movie
 
     private val movieId: Int =
         savedStateHandle[MovieDetails.movieIdArg] ?: throw IllegalStateException("No value passed for movieId")
 
-    private lateinit var movie: DetailsMovie
 
     private val _systemMessage = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val systemMessage = _systemMessage.asSharedFlow()
@@ -36,8 +35,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun getMovieDetails() {
         viewModelScope.launch {
             try {
-                movie = moviesRepository.getMovieDetails(movieId = movieId)
-                _posterPath.emit(movie.posterPath)
+                _movie.emit(moviesRepository.getMovieDetails(movieId = movieId))
             }catch (e: Exception){
                 _systemMessage.emit(e.message ?: e.toString())
             }

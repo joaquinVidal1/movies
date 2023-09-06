@@ -34,12 +34,12 @@ data class ApiDetailsMovie(
         return DetailsMovie(
             id = id,
             title = title,
-            genres = genres,
+            genres = genres.map { it.name },
             overview = overview,
             voteAverage = voteAverage,
             peopleWatching = popularity.toString().replace(".", "").toInt(),
-            posterPath = MOVIE_IMAGE_BASE_URL + posterPath,
-            videoPreviewPath = MOVIE_IMAGE_BASE_URL + backdropPath,
+            posterPath = MOVIE_IMAGE_BASE_URL_400 + posterPath,
+            videoPreviewPath = MOVIE_IMAGE_BASE_URL_400 + backdropPath,
         )
     }
 }

@@ -82,7 +82,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
 
     DisposableEffect(Unit) {
         onDispose {
-            Log.d("juacoCompose", "saving scroll state ${listState.firstVisibleItemIndex}")
             scrollState = Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset)
         }
     }
@@ -131,7 +130,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     }
 
     LaunchedEffect(shouldScroll) {
-        Log.d("juacoCompose", "scrollingo to item: $scrollState")
         listState.scrollToItem(index = scrollState.first, scrollOffset = scrollState.second)
     }
 
