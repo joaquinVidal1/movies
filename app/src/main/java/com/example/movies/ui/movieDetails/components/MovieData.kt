@@ -1,5 +1,6 @@
 package com.example.movies.ui.movieDetails.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,13 +41,16 @@ fun MovieData(peopleWatching: Int, genres: List<String>, vote: Float, modifier: 
         }
 
     }
+
     Column(modifier = modifier) {
+
         Text(text = peopleWatchingText)
         Spacer(modifier = Modifier.size(4.dp))
         Text(
             text = genres.joinToString(separator = ", "),
             style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
         )
+
         Spacer(modifier = Modifier.size(4.dp))
         Row {
             VoteDecimalText(
@@ -57,7 +61,7 @@ fun MovieData(peopleWatching: Int, genres: List<String>, vote: Float, modifier: 
                 )
             )
 
-            for (i in 0 until vote.toInt() step 2) {
+            for (i in 2 until vote.toInt() step 2) {
                 Icon(Icons.Default.Star, contentDescription = null, tint = colorResource(id = R.color.orange))
             }
 
