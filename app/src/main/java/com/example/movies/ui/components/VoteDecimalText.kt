@@ -12,12 +12,14 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 
 @Composable
 fun VoteDecimalText(text: String, textStyle: SpanStyle, modifier: Modifier = Modifier) {
-    val parts = text.split(".")
+    val voteValue = text.toFloat().times(10).roundToInt().div(10f)
+    val parts = voteValue.toString().split(".")
     val integerPart = parts[0]
-    val fractionalPart = if (parts.size > 1) parts[1] else "0"
+    val fractionalPart = parts[1]
 
     val text = buildAnnotatedString {
         withStyle(style = textStyle.copy(fontWeight = FontWeight.Bold)) {

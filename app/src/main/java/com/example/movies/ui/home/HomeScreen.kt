@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.model.Movie
 import com.example.movies.ui.home.components.MovieCover
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
@@ -130,6 +131,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     }
 
     LaunchedEffect(shouldScroll) {
+        Log.d("juaco compose", "executed launchedEffect")
         listState.scrollToItem(index = scrollState.first, scrollOffset = scrollState.second)
     }
 
