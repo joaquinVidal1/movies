@@ -32,7 +32,7 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: () -> Un
 
     LaunchedEffect(Unit) {
         viewModel.systemMessage.collect { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            message?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
         }
     }
 

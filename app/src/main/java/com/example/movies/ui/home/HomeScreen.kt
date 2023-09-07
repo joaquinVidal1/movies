@@ -46,7 +46,7 @@ import com.example.movies.ui.home.components.MovieCover
 @Composable
 fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
 
-    val viewModel: HomeViewModel = hiltViewModel()
+     val viewModel: HomeViewModel = hiltViewModel()
     val movies by viewModel.movies.collectAsState(initial = emptyList())
     val context = LocalContext.current
     val isLoading by viewModel.isLoading.collectAsState(true)
