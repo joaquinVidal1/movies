@@ -1,6 +1,5 @@
 package com.example.movies.ui.home
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +46,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
+
     val viewModel: HomeViewModel = hiltViewModel()
     val movies by viewModel.movies.collectAsState(initial = emptyList())
     val context = LocalContext.current
@@ -131,7 +131,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     }
 
     LaunchedEffect(shouldScroll) {
-        Log.d("juaco compose", "executed launchedEffect")
         listState.scrollToItem(index = scrollState.first, scrollOffset = scrollState.second)
     }
 

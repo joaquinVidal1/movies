@@ -49,7 +49,8 @@ fun MoviesApp() {
 
             composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { navBackStackEntry ->
                 MovieDetailsScreen(
-                    onBackPressed = { navController.navigateUp() }
+                    onBackPressed = { navController.navigateUp() },
+                    onShowReviewsPressed = {  }
                 )
             }
         }

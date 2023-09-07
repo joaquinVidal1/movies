@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -51,7 +52,8 @@ fun MovieData(peopleWatching: Int, genres: List<String>, vote: Float, modifier: 
             style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
         )
 
-        Spacer(modifier = Modifier.size(4.dp))
+        Spacer(modifier = Modifier.size(16.dp))
+
         Row {
             VoteDecimalText(
                 text = vote.toString(), textStyle = MaterialTheme.typography.bodyLarge.toSpanStyle().copy(
@@ -77,6 +79,8 @@ fun MovieData(peopleWatching: Int, genres: List<String>, vote: Float, modifier: 
 @Preview
 fun MovieDataPreview() {
     MoviesTheme {
-        MovieData(peopleWatching = 3245, genres = listOf("Action", "Fantasy", "Adventure"), vote = 8.8f)
+        Surface {
+            MovieData(peopleWatching = 3245, genres = listOf("Action", "Fantasy", "Adventure"), vote = 9.8f)
+        }
     }
 }
