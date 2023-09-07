@@ -23,7 +23,7 @@ import com.example.movies.R
 import com.example.movies.ui.theme.MoviesTheme
 
 @Composable
-fun MoviePoster(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifier = Modifier) {
+fun MovieVideoPreview(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Image(
             painter = rememberAsyncImagePainter(
@@ -61,6 +61,6 @@ fun MoviePoster(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifi
 @Composable
 fun MoviePosterPreview() {
     MoviesTheme {
-        MoviePoster(onBackPressed = {}, moviePoster = "")
+        MovieVideoPreview(onBackPressed = {}, moviePoster = "")
     }
 }

@@ -43,7 +43,7 @@ fun MovieDetails(
     Box(
         modifier = modifier,
     ) {
-        MoviePoster(
+        MovieVideoPreview(
             onBackPressed = onBackPressed,
             moviePoster = videoPreviewPath,
             modifier = Modifier
