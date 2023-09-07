@@ -61,6 +61,7 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
             currentPage++
             moviesRepository.getMoreMovies(currentPage)
         } catch (e: Exception) {
+            currentPage--
             e.message?.let { _systemMessage.postValue(it) }
         }
         _isLoading.value = false
