@@ -1,35 +1,22 @@
 package com.example.movies.ui.movieDetails
 
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
@@ -61,19 +48,19 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: () -> Un
                 posterPath = movie.posterPath,
                 videoPreviewPath = movie.videoPreviewPath,
                 onBackPressed = onBackPressed,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-
 
             Text(
                 text = movie.overview,
                 style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-                modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp)
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
 
             GradientFloatingActionButton(
                 gradientColors = listOf(colorResource(id = R.color.orange), Color.Magenta),
                 onClick = onShowReviewsPressed,
-                elevation = 16.dp,
+                elevation = 8.dp,
                 modifier = Modifier
                     .padding(bottom = 50.dp)
                     .align(CenterHorizontally)

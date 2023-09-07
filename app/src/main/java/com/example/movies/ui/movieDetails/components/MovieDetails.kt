@@ -55,7 +55,7 @@ fun MovieDetails(
 
         Row(
             modifier = Modifier
-                .offset(y = 150.dp)
+                .offset(y = 120.dp)
                 .fillMaxWidth()
         ) {
             Image(

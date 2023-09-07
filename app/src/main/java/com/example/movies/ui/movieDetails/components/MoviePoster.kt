@@ -2,11 +2,9 @@ package com.example.movies.ui.movieDetails.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
@@ -34,10 +32,15 @@ fun MoviePoster(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifi
             contentDescription = stringResource(R.string.movie_poster),
             modifier = Modifier
                 .fillMaxWidth(),
-            contentScale = ContentScale.FillWidth ,
+            contentScale = ContentScale.FillWidth,
         )
 
-        BackButton(color = Color.White, modifier = Modifier.align(Alignment.TopStart).padding(top = 24.dp, start = 16.dp)) {
+        BackButton(
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 24.dp, start = 16.dp)
+        ) {
             onBackPressed()
         }
 
@@ -45,7 +48,9 @@ fun MoviePoster(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifi
             imageVector = Icons.Filled.PlayArrow,
             contentDescription = null,
             colorFilter = ColorFilter.tint(colorResource(id = R.color.orange)),
-            modifier = Modifier.align(Alignment.Center).size(32.dp)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(32.dp)
         )
 
     }
