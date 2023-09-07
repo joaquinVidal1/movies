@@ -21,7 +21,7 @@ data class ApiMovie(
     @Json(name = "vote_count") val voteCount: Int
 ) {
     fun toLocalModel(): Movie = Movie(
-        id = id.toString(),
+        id = id,
         title = title,
         overview = overview,
         savedTimeStamp = System.currentTimeMillis(),
@@ -32,3 +32,4 @@ data class ApiMovie(
 }
 
 const val MOVIE_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w200"
+const val MOVIE_IMAGE_BASE_URL_400 = "https://image.tmdb.org/t/p/w500"

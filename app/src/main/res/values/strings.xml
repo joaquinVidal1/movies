@@ -4,4 +4,7 @@
     <string name="internet_connection_error">No internet connection</string>
     <string name="shared_preferences_name">Movies Preferences</string>
     <string name="movies">Movies</string>
+    <string name="people_watching">"People watching"</string>
+    <string name="back">Back</string>
+    <string name="show_reviews">Show Reviews</string>
 </resources>
