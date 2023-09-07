@@ -1,8 +1,8 @@
 package com.example.movies.di
 
 import android.content.Context
-import com.example.movies.db.MoviesDao
-import com.example.movies.db.MoviesDatabase
+import com.example.movies.data.db.MoviesDao
+import com.example.movies.data.db.MoviesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

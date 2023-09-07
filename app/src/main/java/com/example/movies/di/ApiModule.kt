@@ -1,7 +1,7 @@
 package com.example.movies.di
 
-import com.example.movies.network.MoviesService
-import com.example.movies.network.RetrofitFactory
+import com.example.movies.data.network.MoviesService
+import com.example.movies.data.network.RetrofitFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
