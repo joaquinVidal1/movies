@@ -18,9 +18,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,10 +42,9 @@ import com.example.movies.ui.home.components.MovieCover
 @Composable
 fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val movies by viewModel.movies.collectAsState(initial = emptyList())
     val context = LocalContext.current
-    val isLoading by viewModel.isLoading.collectAsState(true)
     val listState = rememberLazyGridState()
+    val uiState: HomeUiState? by viewModel.uiState.observeAsState()
 
     val loadMore by remember {
         derivedStateOf {
@@ -54,12 +53,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
             val value = (lastVisibleItemIndex > (totalItems - buffer)) && (totalItems > 1)
             value
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.systemMessage.collect { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -91,7 +84,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
                 )
             })
 
-            items(items = movies, key = { movie -> movie.id }) { movie ->
+            items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
                 MovieCover(movie = movie,
                     modifier = Modifier
                         .size(250.dp)
@@ -101,14 +94,26 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             }
         }
 
-        if (isLoading) {
-            CircularProgressIndicator(
-                color = colorResource(id = R.color.orange),
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .size(54.dp),
-                strokeWidth = 6.dp
-            )
+        when (uiState) {
+            is HomeUiState.Loading -> {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.orange),
+                    modifier = Modifier
+                        .padding(bottom = 32.dp)
+                        .size(54.dp),
+                    strokeWidth = 6.dp
+                )
+            }
+
+            is HomeUiState.Error -> {
+                Toast.makeText(
+                    context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            is HomeUiState.Success -> {}
+
+            null -> {}
         }
     }
 }

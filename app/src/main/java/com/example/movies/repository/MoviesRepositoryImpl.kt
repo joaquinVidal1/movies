@@ -1,5 +1,6 @@
 package com.example.movies.repository
 
+import androidx.lifecycle.LiveData
 import androidx.room.Transaction
 import com.example.movies.db.MoviesDao
 import com.example.movies.model.Movie
@@ -15,7 +16,7 @@ class MoviesRepositoryImpl @Inject constructor(
     private val moviesDao: MoviesDao, private val moviesService: MoviesService
 ) : MoviesRepository {
 
-    override val movies: Flow<List<Movie>> = moviesDao.getMovies()
+    override val movies: LiveData<List<Movie>> = moviesDao.getMovies()
 
     @Transaction
     override suspend fun updateMovies() {

@@ -1,11 +1,12 @@
 package com.example.movies.repository
 
+import androidx.lifecycle.LiveData
 import androidx.room.Transaction
 import com.example.movies.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
-    val movies: Flow<List<Movie>>
+    val movies: LiveData<List<Movie>>
     @Transaction
     suspend fun updateMovies()
     suspend fun getMoreMovies(page: Int)

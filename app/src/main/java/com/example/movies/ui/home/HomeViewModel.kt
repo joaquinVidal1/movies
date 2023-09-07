@@ -1,14 +1,13 @@
 package com.example.movies.ui.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,27 +16,43 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
 
     val movies = moviesRepository.movies
 
-    private var currentPage = 1
+    private var currentPage = 0
 
-    private val _systemMessage = MutableSharedFlow<String>(extraBufferCapacity = 1)
-    val systemMessage = _systemMessage.asSharedFlow()
+    private val _systemMessage = MutableLiveData<String?>(null)
+    private val _isLoading = MutableLiveData(false)
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: Flow<Boolean> = _isLoading.asStateFlow()
+    private val _uiState = MediatorLiveData<HomeUiState>(HomeUiState.Loading(listOf()))
+    val uiState: LiveData<HomeUiState> = _uiState.distinctUntilChanged()
 
     init {
-        viewModelScope.launch {
-            updateMovies()
+        updateMovies()
+
+        _uiState.addSource(movies) {
+            _uiState.value = HomeUiState.Success(it)
+        }
+
+        _uiState.addSource(_systemMessage) {
+            _uiState.value = it?.let { HomeUiState.Error(errorMessage = it, data = movies.value ?: listOf()) }
+        }
+
+        _uiState.addSource(_isLoading) {
+            _uiState.value = if (it) {
+                HomeUiState.Loading(movies.value ?: listOf())
+            } else {
+                HomeUiState.Success(movies.value ?: listOf())
+            }
         }
     }
 
-    suspend fun updateMovies() {
-        try {
-            moviesRepository.updateMovies()
-        } catch (e: Exception) {
-            e.message?.let { _systemMessage.emit(it) }
+    private fun updateMovies() {
+        viewModelScope.launch {
+            try {
+                moviesRepository.updateMovies()
+            } catch (e: Exception) {
+                e.message?.let { _systemMessage.postValue(it) }
+            }
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
     suspend fun getMoreMovies() {
@@ -46,7 +61,7 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
             currentPage++
             moviesRepository.getMoreMovies(currentPage)
         } catch (e: Exception) {
-            e.message?.let { _systemMessage.emit(it) }
+            e.message?.let { _systemMessage.postValue(it) }
         }
         _isLoading.value = false
     }

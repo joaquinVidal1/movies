@@ -1,5 +1,6 @@
 package com.example.movies.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface MoviesDao {
 
     @Query("SELECT * FROM Movie")
-    fun getMovies(): Flow<List<Movie>>
+    fun getMovies(): LiveData<List<Movie>>
 
     @Query("DELETE FROM Movie WHERE Movie.savedTimeStamp < :deleteTimeMin")
     fun deleteExpiredMovies(deleteTimeMin: Long)
