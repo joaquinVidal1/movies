@@ -3,9 +3,10 @@ package com.example.movies.presentation.movieDetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movies.presentation.destinations.MovieDetails
+import com.example.movies.data.Result
 import com.example.movies.domain.model.DetailsMovie
-import com.example.movies.domain.repository.MoviesRepository
+import com.example.movies.domain.usecase.GetMovieDetailsUseCase
+import com.example.movies.presentation.destinations.MovieDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle, private val moviesRepository: MoviesRepository
+    savedStateHandle: SavedStateHandle, private val getMovieDetailsUSeCase: GetMovieDetailsUseCase
 ) : ViewModel() {
 
     private val movieId: Int =
@@ -36,11 +37,10 @@ class MovieDetailsViewModel @Inject constructor(
     val systemMessage: Flow<String?> = _systemMessage
 
     private suspend fun getMovieDetails(movieId: Int): DetailsMovie? {
-        return try {
-            moviesRepository.getMovieDetails(movieId = movieId)
-        } catch (e: Exception) {
-            _systemMessage.emit(e.message ?: e.toString())
+        val movieDetails = getMovieDetailsUSeCase(params = GetMovieDetailsUseCase.Params(movieId = movieId))
+        return if (movieDetails is Result.Error) {
+            _systemMessage.emit(movieDetails.message ?: movieDetails.toString())
             null
-        }
+        } else (movieDetails as Result.Success).value
     }
 }

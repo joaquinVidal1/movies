@@ -8,7 +8,7 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
 import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
-import com.example.movies.domain.usecase.LoadMoreMoviesUseCase
+import com.example.movies.domain.usecase.LoadMoviesUseCase
 import com.example.movies.domain.usecase.ObserveMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val observeMoviesUseCase: ObserveMoviesUseCase,
-    val loadMoviesUseCase: LoadMoreMoviesUseCase,
+    val loadMoviesUseCase: LoadMoviesUseCase,
     private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
 ) : ViewModel() {
 
@@ -53,12 +53,13 @@ class HomeViewModel @Inject constructor(
 
     private fun updateMovies() {
         viewModelScope.launch {
-            try {
-                deleteExpiredMoviesUseCase.execute(Unit)
-                loadMoviesUseCase.execute(LoadMoreMoviesUseCase.Params(currentPage))
-            } catch (e: Exception) {
-                e.message?.let { _systemMessage.postValue(it) }
+            val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
+            val resultOfLoading = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
+            when {
+                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let { _systemMessage.postValue(it) }
+                resultOfLoading is Result.Error -> resultOfLoading.message?.let { _systemMessage.postValue(it) }
             }
+
             _isLoading.value = false
         }
     }
@@ -66,7 +67,7 @@ class HomeViewModel @Inject constructor(
     suspend fun getMoreMovies() {
         _isLoading.value = true
         currentPage++
-        val result = loadMoviesUseCase(LoadMoreMoviesUseCase.Params(currentPage))
+        val result = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
         if (result is Result.Error) {
             currentPage--
             result.message?.let { _systemMessage.postValue(it) }

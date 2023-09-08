@@ -16,5 +16,5 @@ abstract class CoroutineUseCase<in P, R>(private val coroutineDispatcher: Corout
         Result.Error(throwable.message, throwable)
     }
 
-    abstract suspend fun execute(params: P): R
+    internal abstract suspend fun execute(params: P): R
 }
