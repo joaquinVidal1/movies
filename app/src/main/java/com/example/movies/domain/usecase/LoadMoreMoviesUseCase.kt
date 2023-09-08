@@ -1,0 +1,15 @@
+package com.example.movies.domain.usecase
+
+import com.example.movies.domain.repository.MoviesRepository
+import com.example.movies.domain.usecase.base.CoroutineUseCase
+import javax.inject.Inject
+
+class LoadMoreMoviesUseCase @Inject constructor(private val moviesRepository: MoviesRepository) :
+    CoroutineUseCase<LoadMoreMoviesUseCase.Params, Unit>() {
+
+    data class Params(val page: Int)
+
+    override suspend fun execute(params: Params) {
+        moviesRepository.getMovies(params.page)
+    }
+}

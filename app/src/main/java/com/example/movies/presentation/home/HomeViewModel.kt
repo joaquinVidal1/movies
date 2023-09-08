@@ -6,17 +6,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
-import com.example.movies.domain.repository.MoviesRepository
+import com.example.movies.data.Result
+import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
+import com.example.movies.domain.usecase.LoadMoreMoviesUseCase
+import com.example.movies.domain.usecase.ObserveMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val observeMoviesUseCase: ObserveMoviesUseCase,
+    val loadMoviesUseCase: LoadMoreMoviesUseCase,
+    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
+) : ViewModel() {
 
-    val movies = moviesRepository.movies
+    val movies = observeMoviesUseCase()
 
-    private var currentPage = 0
+    private var currentPage = 1
 
     private val _systemMessage = MutableLiveData<String?>(null)
     private val _isLoading = MutableLiveData(false)
@@ -47,7 +54,8 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private fun updateMovies() {
         viewModelScope.launch {
             try {
-                moviesRepository.updateMovies()
+                deleteExpiredMoviesUseCase.execute(Unit)
+                loadMoviesUseCase.execute(LoadMoreMoviesUseCase.Params(currentPage))
             } catch (e: Exception) {
                 e.message?.let { _systemMessage.postValue(it) }
             }
@@ -57,12 +65,11 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
 
     suspend fun getMoreMovies() {
         _isLoading.value = true
-        try {
-            currentPage++
-            moviesRepository.getMoreMovies(currentPage)
-        } catch (e: Exception) {
+        currentPage++
+        val result = loadMoviesUseCase(LoadMoreMoviesUseCase.Params(currentPage))
+        if (result is Result.Error) {
             currentPage--
-            e.message?.let { _systemMessage.postValue(it) }
+            result.message?.let { _systemMessage.postValue(it) }
         }
         _isLoading.value = false
     }

@@ -1,11 +1,10 @@
 package com.example.movies.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.room.Transaction
 import com.example.movies.data.db.MoviesDao
+import com.example.movies.data.network.MoviesService
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
-import com.example.movies.data.network.MoviesService
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,17 +18,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override val movies: LiveData<List<Movie>> = moviesDao.getMovies()
 
-    @Transaction
-    override suspend fun updateMovies() {
-        withContext(Dispatchers.IO) {
-            val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
-            moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
-            val newMovies = moviesService.getMovies(page = 1).results.map { it.toLocalModel() }
-            moviesDao.insertMovies(newMovies)
-        }
-    }
-
-    override suspend fun getMoreMovies(page: Int) {
+    override suspend fun getMovies(page: Int) {
         withContext(Dispatchers.IO) {
             val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
             moviesDao.insertMovies(newMovies)
@@ -38,6 +27,13 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetails(movieId: Int): DetailsMovie {
         return moviesService.getMovieDetails(movieId).toModel()
+    }
+
+    override suspend fun deleteExpiredMovies() {
+        withContext(Dispatchers.IO) {
+            val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
+            moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
+        }
     }
 
 }
