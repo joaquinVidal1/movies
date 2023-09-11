@@ -25,15 +25,17 @@ import com.example.movies.R
 import com.example.movies.presentation.theme.MoviesTheme
 
 @Composable
-fun MovieReview(profileImage: String, profileName: String, review: String) {
-    Row {
+fun MovieReview(profileImage: String?, profileName: String, review: String, modifier: Modifier = Modifier) {
+    Row(modifier = modifier) {
         Image(
             painter = rememberAsyncImagePainter(
-                profileImage, placeholder = rememberVectorPainter(image = Icons.Rounded.AccountCircle)
+                profileImage,
+                placeholder = rememberVectorPainter(image = Icons.Rounded.AccountCircle),
+                error = rememberVectorPainter(image = Icons.Rounded.AccountCircle)
             ),
             contentDescription = stringResource(R.string.profile_image),
             modifier = Modifier
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
+                .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop,
         )
@@ -52,7 +54,7 @@ fun MovieReviewPreview() {
     MoviesTheme {
         Surface {
             MovieReview(
-                profileImage = "srgfaefg4ga4ag4sgs",
+                profileImage = null,
                 profileName = "Sarah Green",
                 review = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             )

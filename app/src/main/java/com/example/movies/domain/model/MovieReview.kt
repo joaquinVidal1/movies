@@ -1,7 +1,7 @@
 package com.example.movies.domain.model
 
 data class MovieReview(
-    val authorDetails: AuthorDetails,
+    val authorDetails: AuthorDetails? = null,
     val updatedAt: String = "",
     val author: String = "",
     val createdAt: String = "",
