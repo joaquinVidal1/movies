@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val observeMoviesUseCase: ObserveMoviesUseCase,
-    val loadMoviesUseCase: LoadMoviesUseCase,
+    private val loadMoviesUseCase: LoadMoviesUseCase,
     private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
 ) : ViewModel() {
 

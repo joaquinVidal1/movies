@@ -5,6 +5,7 @@ import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.network.MoviesService
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MovieReview
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,6 +35,10 @@ class MoviesRepositoryImpl @Inject constructor(
             val minTimeStamp = System.currentTimeMillis() - TIME_MOVIE_AVAILABLE
             moviesDao.deleteExpiredMovies(deleteTimeMin = minTimeStamp)
         }
+    }
+
+    override suspend fun getMovieReviews(movieId: Int, page: Int): List<MovieReview> {
+        return moviesService.getMovieReviews(movieId).results
     }
 
 }

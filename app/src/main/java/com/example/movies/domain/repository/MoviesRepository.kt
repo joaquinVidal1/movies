@@ -3,6 +3,7 @@ package com.example.movies.domain.repository
 import androidx.lifecycle.LiveData
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MovieReview
 
 interface MoviesRepository {
 
@@ -13,4 +14,6 @@ interface MoviesRepository {
     suspend fun getMovieDetails(movieId: Int): DetailsMovie
 
     suspend fun deleteExpiredMovies()
+
+    suspend fun getMovieReviews(movieId: Int, page: Int): List<MovieReview>
 }

@@ -1,5 +1,6 @@
 package com.example.movies.presentation.main
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,8 +16,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.movies.presentation.destinations.Home
 import com.example.movies.presentation.destinations.MovieDetails
+import com.example.movies.presentation.destinations.MovieReviews
 import com.example.movies.presentation.home.HomeScreen
 import com.example.movies.presentation.movieDetails.MovieDetailsScreen
+import com.example.movies.presentation.movieReviews.MovieReviewsScreen
 import com.example.movies.presentation.theme.MoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,10 +52,21 @@ fun MoviesApp() {
                 })
             }
 
-            composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { navBackStackEntry ->
-                MovieDetailsScreen(
+            composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { _ ->
+                MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
+                    onShowReviewsPressed = { movie ->
+                        navController.navigateToReviews(
+                            movieId = movie.id,
+                            moviePoster = movie.posterPath
+                        )
+                    })
+            }
+
+            composable(route = MovieReviews.routeWithArgs, arguments = MovieReviews.arguments) { navBackStackEntry ->
+                MovieReviewsScreen(
                     onBackPressed = { navController.navigateUp() },
-                    onShowReviewsPressed = {  }
+                    posterPath = navBackStackEntry.arguments?.getString(MovieReviews.moviePosterPathArg)
+                        ?: throw Exception("No value passed for movie poster")
                 )
             }
         }
@@ -69,4 +83,9 @@ fun GreetingPreview() {
 
 private fun NavHostController.navigateToMovieDetails(movieId: Int) {
     this.navigate("${MovieDetails.route}/$movieId")
+}
+
+private fun NavHostController.navigateToReviews(movieId: Int, moviePoster: String) {
+    val encodedPosterPath = Uri.encode(moviePoster)
+    this.navigate("${MovieReviews.route}/$movieId/$encodedPosterPath")
 }

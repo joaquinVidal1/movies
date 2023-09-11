@@ -20,15 +20,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
+import com.example.movies.domain.model.DetailsMovie
+import com.example.movies.presentation.destinations.MovieDetails
 import com.example.movies.presentation.movieDetails.components.GradientFloatingActionButton
 import com.example.movies.presentation.movieDetails.components.MovieDetails
 
 @Composable
-fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: () -> Unit) {
+fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (DetailsMovie) -> Unit) {
 
     val viewModel: MovieDetailsViewModel = hiltViewModel()
-    val movie by viewModel.movie.collectAsState(initial = null)
     val context = LocalContext.current
+    val movie by viewModel.movie.collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
         viewModel.systemMessage.collect { message ->
@@ -59,7 +61,7 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: () -> Un
 
             GradientFloatingActionButton(
                 gradientColors = listOf(colorResource(id = R.color.orange), Color.Magenta),
-                onClick = onShowReviewsPressed,
+                onClick = { onShowReviewsPressed(movie) },
                 elevation = 8.dp,
                 modifier = Modifier
                     .padding(bottom = 50.dp)
