@@ -35,7 +35,7 @@ fun MovieReview(profileImage: String?, profileName: String, review: String, modi
             ),
             contentDescription = stringResource(R.string.profile_image),
             modifier = Modifier
-                .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp))
+                .shadow(elevation = 2.dp, shape = RoundedCornerShape(8.dp), clip = true)
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop,
         )

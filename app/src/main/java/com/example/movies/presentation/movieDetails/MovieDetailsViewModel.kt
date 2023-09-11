@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.usecase.GetMovieDetailsUseCase
-import com.example.movies.presentation.destinations.MovieDetails
+import com.example.movies.presentation.destinations.MovieDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ class MovieDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val movieId: Int =
-        savedStateHandle[MovieDetails.movieIdArg] ?: throw IllegalStateException("No value passed for movieId")
+        savedStateHandle[MovieDetailsDestination.movieIdArg] ?: throw IllegalStateException("No value passed for movieId")
 
     val movie: Flow<DetailsMovie> = callbackFlow {
         viewModelScope.launch {

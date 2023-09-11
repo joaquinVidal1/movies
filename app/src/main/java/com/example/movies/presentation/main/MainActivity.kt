@@ -14,9 +14,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.movies.presentation.destinations.Home
-import com.example.movies.presentation.destinations.MovieDetails
-import com.example.movies.presentation.destinations.MovieReviews
+import com.example.movies.presentation.destinations.HomeDestination
+import com.example.movies.presentation.destinations.MovieDetailsDestination
+import com.example.movies.presentation.destinations.MovieReviewsDestination
 import com.example.movies.presentation.home.HomeScreen
 import com.example.movies.presentation.movieDetails.MovieDetailsScreen
 import com.example.movies.presentation.movieReviews.MovieReviewsScreen
@@ -43,16 +43,16 @@ fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
         NavHost(
-            navController = navController, startDestination = Home.route
+            navController = navController, startDestination = HomeDestination.route
         ) {
 
-            composable(route = Home.route) {
+            composable(route = HomeDestination.route) {
                 HomeScreen(onMoviePressed = {
                     navController.navigateToMovieDetails(it.id)
                 })
             }
 
-            composable(route = MovieDetails.routeWithArgs, arguments = MovieDetails.arguments) { _ ->
+            composable(route = MovieDetailsDestination.routeWithArgs, arguments = MovieDetailsDestination.arguments) { _ ->
                 MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
                     onShowReviewsPressed = { movie ->
                         navController.navigateToReviews(
@@ -62,10 +62,10 @@ fun MoviesApp() {
                     })
             }
 
-            composable(route = MovieReviews.routeWithArgs, arguments = MovieReviews.arguments) { navBackStackEntry ->
+            composable(route = MovieReviewsDestination.routeWithArgs, arguments = MovieReviewsDestination.arguments) { navBackStackEntry ->
                 MovieReviewsScreen(
                     onBackPressed = { navController.navigateUp() },
-                    posterPath = navBackStackEntry.arguments?.getString(MovieReviews.moviePosterPathArg)
+                    posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
                         ?: throw Exception("No value passed for movie poster")
                 )
             }
@@ -82,10 +82,10 @@ fun GreetingPreview() {
 }
 
 private fun NavHostController.navigateToMovieDetails(movieId: Int) {
-    this.navigate("${MovieDetails.route}/$movieId")
+    this.navigate("${MovieDetailsDestination.route}/$movieId")
 }
 
 private fun NavHostController.navigateToReviews(movieId: Int, moviePoster: String) {
     val encodedPosterPath = Uri.encode(moviePoster)
-    this.navigate("${MovieReviews.route}/$movieId/$encodedPosterPath")
+    this.navigate("${MovieReviewsDestination.route}/$movieId/$encodedPosterPath")
 }

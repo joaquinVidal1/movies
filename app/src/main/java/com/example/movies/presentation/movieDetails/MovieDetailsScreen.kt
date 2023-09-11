@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.DetailsMovie
-import com.example.movies.presentation.destinations.MovieDetails
 import com.example.movies.presentation.movieDetails.components.GradientFloatingActionButton
 import com.example.movies.presentation.movieDetails.components.MovieDetails
 

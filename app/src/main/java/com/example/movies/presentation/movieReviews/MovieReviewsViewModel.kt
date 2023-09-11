@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
-import com.example.movies.domain.model.MovieReview
+import com.example.movies.domain.model.MovieReviews
 import com.example.movies.domain.usecase.GetMovieReviewsUseCase
 import com.example.movies.domain.utils.SingleLiveEvent
-import com.example.movies.presentation.destinations.MovieReviews
+import com.example.movies.presentation.destinations.MovieReviewsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,19 +21,27 @@ class MovieReviewsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, private val getMovieReviewsUseCase: GetMovieReviewsUseCase
 ) : ViewModel() {
 
-    private val movieId: Int = savedStateHandle.get<Int>(MovieReviews.movieIdArg)
+    private val movieId: Int = savedStateHandle.get<Int>(MovieReviewsDestination.movieIdArg)
         ?: throw IllegalArgumentException("No value passed for movieId")
 
-//    val posterPath: String = savedStateHandle.get<String>(MovieReviews.moviePosterPathArg)
-//        ?: throw IllegalArgumentException("No value passed for poster path")
-
     private var currentPage = 1
+    private var totalPages: Int? = null
 
-    private val _movieReviews = MutableLiveData<List<MovieReview>>(listOf())
+    private val _movieReviews = MutableLiveData(
+        MovieReviews(
+            0, listOf(), -1
+        )
+    )
     private val _systemMessage = SingleLiveEvent<String>()
     private val _isLoading = MutableLiveData(false)
 
-    private val _uiState = MediatorLiveData<MovieReviewsUiState>(MovieReviewsUiState.Loading(listOf()))
+    private val _uiState = MediatorLiveData<MovieReviewsUiState>(
+        MovieReviewsUiState.Loading(
+            MovieReviews(
+                0, listOf(), -1
+            )
+        )
+    )
     val uiState: LiveData<MovieReviewsUiState> = _uiState.distinctUntilChanged()
 
     init {
@@ -44,15 +52,28 @@ class MovieReviewsViewModel @Inject constructor(
         }
 
         _uiState.addSource(_systemMessage) {
-            _uiState.value =
-                it?.let { MovieReviewsUiState.Error(errorMessage = it, data = _movieReviews.value ?: listOf()) }
+            _uiState.value = it?.let {
+                MovieReviewsUiState.Error(
+                    errorMessage = it, data = _movieReviews.value ?: MovieReviews(
+                        0, listOf(), -1
+                    )
+                )
+            }
         }
 
         _uiState.addSource(_isLoading) {
             _uiState.value = if (it) {
-                MovieReviewsUiState.Loading(_movieReviews.value ?: listOf())
+                MovieReviewsUiState.Loading(
+                    _movieReviews.value ?: MovieReviews(
+                        0, listOf(), -1
+                    )
+                )
             } else {
-                MovieReviewsUiState.Success(_movieReviews.value ?: listOf())
+                MovieReviewsUiState.Success(
+                    _movieReviews.value ?: MovieReviews(
+                        0, listOf(), -1
+                    )
+                )
             }
         }
     }
@@ -61,6 +82,7 @@ class MovieReviewsViewModel @Inject constructor(
         viewModelScope.launch {
             val result = getMovieReviewsUseCase(GetMovieReviewsUseCase.Params(movieId = movieId, page = currentPage))
             if (result is Result.Success) {
+                totalPages = result.value.totalPages
                 _movieReviews.postValue(result.value)
                 currentPage++
             } else {
@@ -69,17 +91,19 @@ class MovieReviewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun getMoreMovies() {
-        _isLoading.value = true
-        currentPage++
-        val result = getMovieReviewsUseCase(GetMovieReviewsUseCase.Params(movieId = movieId, page = currentPage))
-        if (result is Result.Error) {
-            currentPage--
-            result.message?.let { _systemMessage.postValue(it) }
-        } else {
-            _movieReviews.postValue((result as Result.Success).value)
+    suspend fun getMoreReviews() {
+        if (currentPage < (totalPages ?: -1)) {
+            _isLoading.value = true
+            currentPage++
+            val result = getMovieReviewsUseCase(GetMovieReviewsUseCase.Params(movieId = movieId, page = currentPage))
+            if (result is Result.Error) {
+                currentPage--
+                result.message?.let { _systemMessage.postValue(it) }
+            } else {
+                _movieReviews.postValue((result as Result.Success).value)
+            }
+            _isLoading.value = false
         }
-        _isLoading.value = false
     }
 
 
