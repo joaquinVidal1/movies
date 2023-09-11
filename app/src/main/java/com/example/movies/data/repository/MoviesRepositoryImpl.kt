@@ -1,8 +1,10 @@
 package com.example.movies.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.network.MoviesService
+import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
@@ -40,9 +42,10 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getMovieReviews(movieId: Int, page: Int): MovieReviews {
         val response = moviesService.getMovieReviews(movieId)
         return MovieReviews(
-            amountOfReviews = response.totalResults,
-            reviews = response.results,
-            totalPages = response.totalPages
+            amountOfReviews = response.totalResults, reviews = response.results.map {
+                val avatarPath = it.authorDetails?.avatarPath
+                it.copy(authorDetails = it.authorDetails?.copy(avatarPath = MOVIE_IMAGE_BASE_URL_400 + avatarPath))
+            }, totalPages = response.totalPages
         )
     }
 

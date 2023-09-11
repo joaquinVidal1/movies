@@ -1,10 +1,10 @@
-package com.example.movies.presentation.movieReviews
+package com.example.movies.presentation.movieReviews.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +35,8 @@ fun MovieReview(profileImage: String?, profileName: String, review: String, modi
             ),
             contentDescription = stringResource(R.string.profile_image),
             modifier = Modifier
-                .shadow(elevation = 2.dp, shape = RoundedCornerShape(8.dp), clip = true)
-                .clip(RoundedCornerShape(8.dp)),
+                .shadow(elevation = 2.dp, shape = CircleShape, clip = true)
+                .clip(CircleShape),
             contentScale = ContentScale.Crop,
         )
 

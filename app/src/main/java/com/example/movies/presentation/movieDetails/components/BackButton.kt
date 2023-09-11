@@ -30,8 +30,6 @@ fun BackButton(modifier: Modifier = Modifier, color: Color, onBackPressed: () ->
 @Preview
 fun BackButtonPreview() {
     MoviesTheme {
-        BackButton(color = Color.White) {
-
-        }
+        BackButton(color = Color.White) {}
     }
 }

@@ -19,7 +19,7 @@ data class ApiDetailsMovie(
     @Json(name = "overview") val overview: String,
     @Json(name = "original_title") val originalTitle: String,
     @Json(name = "runtime") val runtime: Int,
-    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "poster_path") val posterPath: String?,
     @Json(name = "spoken_languages") val spokenLanguages: List<SpokenLanguagesItem>?,
     @Json(name = "production_companies") val productionCompanies: List<ProductionCompaniesItem>?,
     @Json(name = "release_date") val releaseDate: String,
