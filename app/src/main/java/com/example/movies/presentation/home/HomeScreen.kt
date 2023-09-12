@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -44,7 +45,8 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
     val listState = rememberLazyGridState()
-    val uiState: HomeUiState? by viewModel.uiState.observeAsState()
+    val uiState: HomeUiState? by viewModel.uiState.collectAsState()
+    val movies by viewModel.movies.collectAsState(initial = listOf())
 
     val loadMore by remember {
         derivedStateOf {
@@ -58,7 +60,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
 
     LaunchedEffect(key1 = loadMore, block = {
         if (loadMore) {
-            viewModel.getMoreMovies()
+            viewModel.getMoreMovies(movies.size)
         }
     })
 
@@ -84,7 +86,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
                 )
             })
 
-            items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
+            items(items = movies, key = { movie -> movie.id }) { movie ->
                 MovieCover(movie = movie,
                     modifier = Modifier
                         .size(250.dp)
@@ -111,9 +113,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
                 ).show()
             }
 
-            is HomeUiState.Success -> {}
-
-            null -> {}
+            else -> {}
         }
     }
 }

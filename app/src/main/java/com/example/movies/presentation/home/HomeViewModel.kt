@@ -1,16 +1,16 @@
 package com.example.movies.presentation.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
+import com.example.movies.domain.model.Movie
 import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
 import com.example.movies.domain.usecase.LoadMoviesUseCase
 import com.example.movies.domain.usecase.ObserveMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,34 +21,15 @@ class HomeViewModel @Inject constructor(
     private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
 ) : ViewModel() {
 
-    val movies = observeMoviesUseCase()
+    val movies: Flow<List<Movie>> = observeMoviesUseCase()
 
     private var currentPage = 1
 
-    private val _systemMessage = MutableLiveData<String?>(null)
-    private val _isLoading = MutableLiveData(false)
-
-    private val _uiState = MediatorLiveData<HomeUiState>(HomeUiState.Loading(listOf()))
-    val uiState: LiveData<HomeUiState> = _uiState.distinctUntilChanged()
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+    val uiState: StateFlow<HomeUiState> = _uiState
 
     init {
         updateMovies()
-
-        _uiState.addSource(movies) {
-            _uiState.value = HomeUiState.Success(it)
-        }
-
-        _uiState.addSource(_systemMessage) {
-            _uiState.value = it?.let { HomeUiState.Error(errorMessage = it, data = movies.value ?: listOf()) }
-        }
-
-        _uiState.addSource(_isLoading) {
-            _uiState.value = if (it) {
-                HomeUiState.Loading(movies.value ?: listOf())
-            } else {
-                HomeUiState.Success(movies.value ?: listOf())
-            }
-        }
     }
 
     private fun updateMovies() {
@@ -56,23 +37,29 @@ class HomeViewModel @Inject constructor(
             val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
             val resultOfLoading = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
             when {
-                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let { _systemMessage.postValue(it) }
-                resultOfLoading is Result.Error -> resultOfLoading.message?.let { _systemMessage.postValue(it) }
-            }
+                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let {
+                    _uiState.value = HomeUiState.Error(it)
+                }
 
-            _isLoading.value = false
+                resultOfLoading is Result.Error -> resultOfLoading.message?.let {
+                    _uiState.value = HomeUiState.Error(it)
+                }
+
+                else -> _uiState.value = HomeUiState.Success
+            }
         }
     }
 
-    suspend fun getMoreMovies() {
-        _isLoading.value = true
+    suspend fun getMoreMovies(currentMoviesSize: Int) {
+        _uiState.value = HomeUiState.Loading
         currentPage++
-        val result = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
+        val result = loadMoviesUseCase(LoadMoviesUseCase.Params(currentMoviesSize))
         if (result is Result.Error) {
             currentPage--
-            result.message?.let { _systemMessage.postValue(it) }
+            result.message?.let { _uiState.value = HomeUiState.Error(it) }
+        } else {
+            _uiState.value = HomeUiState.Success
         }
-        _isLoading.value = false
     }
 
 }

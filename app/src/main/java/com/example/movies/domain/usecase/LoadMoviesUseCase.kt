@@ -7,9 +7,9 @@ import javax.inject.Inject
 class LoadMoviesUseCase @Inject constructor(private val moviesRepository: MoviesRepository) :
     CoroutineUseCase<LoadMoviesUseCase.Params, Unit>() {
 
-    data class Params(val page: Int)
+    data class Params(val currentMovies: Int)
 
     override suspend fun execute(params: Params) {
-        moviesRepository.getMovies(params.page)
+        moviesRepository.getMovies(params.currentMovies)
     }
 }

@@ -5,12 +5,13 @@ import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReview
 import com.example.movies.domain.model.MovieReviews
+import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    val movies: LiveData<List<Movie>>
+    val movies: Flow<List<Movie>>
 
-    suspend fun getMovies(page: Int)
+    suspend fun getMovies(currentMovies: Int)
 
     suspend fun getMovieDetails(movieId: Int): DetailsMovie
 

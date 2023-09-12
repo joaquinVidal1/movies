@@ -3,6 +3,7 @@ package com.example.movies.data.network.model
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.utils.DateUtils.fromBackendDateToLocalDate
 import com.squareup.moshi.Json
+import java.time.LocalDate
 
 data class ApiMovie(
     val overview: String,
@@ -11,9 +12,9 @@ data class ApiMovie(
     val video: Boolean,
     val title: String,
     @Json(name = "genre_ids") val genreIds: List<Int>,
-    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "poster_path") val posterPath: String?,
     @Json(name = "backdrop_path") val backdropPath: String?,
-    @Json(name = "release_date") val releaseDate: String,
+    @Json(name = "release_date") val releaseDate: String?,
     val popularity: Double,
     @Json(name = "vote_average") val voteAverage: Double,
     val id: Int,
@@ -25,7 +26,7 @@ data class ApiMovie(
         title = title,
         overview = overview,
         savedTimeStamp = System.currentTimeMillis(),
-        releaseDate = releaseDate.fromBackendDateToLocalDate(),
+        releaseDate = releaseDate?.fromBackendDateToLocalDate() ?: LocalDate.now(),
         voteAverage = voteAverage,
         poster = MOVIE_IMAGE_BASE_URL + posterPath,
     )

@@ -12,7 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface MoviesDao {
 
     @Query("SELECT * FROM Movie")
-    fun getMovies(): LiveData<List<Movie>>
+    fun getMovies(): Flow<List<Movie>>
+
+    @Query("SELECT * FROM Movie")
+    suspend fun getMoviesAsync():List<Movie>
 
     @Query("DELETE FROM Movie WHERE Movie.savedTimeStamp < :deleteTimeMin")
     fun deleteExpiredMovies(deleteTimeMin: Long)

@@ -48,7 +48,10 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
 
             MovieDetailsUiState.Loading -> {
                 Box {
-                    CircularProgressIndicator(modifier = Modifier.align(Center))
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Center),
+                        color = colorResource(id = R.color.orange)
+                    )
                 }
             }
         }
