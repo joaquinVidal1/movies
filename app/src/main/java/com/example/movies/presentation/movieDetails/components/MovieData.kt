@@ -45,7 +45,9 @@ fun MovieData(peopleWatching: Int, genres: List<String>, vote: Float, modifier: 
     Column(modifier = modifier) {
 
         Text(text = peopleWatchingText)
+
         Spacer(modifier = Modifier.size(4.dp))
+
         Text(
             text = genres.joinToString(separator = ", "),
             style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)

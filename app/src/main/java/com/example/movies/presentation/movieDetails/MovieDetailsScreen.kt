@@ -1,7 +1,6 @@
 package com.example.movies.presentation.movieDetails
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +38,7 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
 
     movie?.let { movie ->
 
-        Column(verticalArrangement = Arrangement.SpaceBetween) {
+        Column {
 
             MovieDetails(
                 title = movie.title,
@@ -49,21 +48,20 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
                 posterPath = movie.posterPath,
                 videoPreviewPath = movie.videoPreviewPath,
                 onBackPressed = onBackPressed,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
             )
 
             Text(
                 text = movie.overview,
                 style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-                modifier = Modifier.padding(horizontal = 24.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
 
             GradientFloatingActionButton(
                 gradientColors = listOf(colorResource(id = R.color.orange), Color.Magenta),
                 onClick = { onShowReviewsPressed(movie) },
                 elevation = 8.dp,
-                modifier = Modifier
-                    .padding(bottom = 50.dp)
+                modifier = Modifier.padding(top = 60.dp)
                     .align(CenterHorizontally)
             ) {
                 Text(
