@@ -3,4 +3,10 @@
     <string name="movie_poster">Movie poster</string>
     <string name="internet_connection_error">No internet connection</string>
     <string name="shared_preferences_name">Movies Preferences</string>
+    <string name="movies">Movies</string>
+    <string name="people_watching">"People watching"</string>
+    <string name="back">Back</string>
+    <string name="show_reviews">Show Reviews</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="reviews">Reviews (%1$d)</string>
 </resources>

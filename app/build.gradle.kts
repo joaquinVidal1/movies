@@ -7,10 +7,14 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}
 
 android {
     namespace = "com.example.movies"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.movies"
@@ -25,18 +29,12 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -49,6 +47,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -68,6 +67,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.2")
 
 //    coil for loading images
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -79,6 +79,7 @@ dependencies {
     val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$roomVersion")
@@ -88,6 +89,11 @@ dependencies {
     //Hilt for di
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
+    implementation("com.squareup.inject:assisted-inject-annotations-dagger2:0.5.2")
+    kapt("com.squareup.inject:assisted-inject-processor-dagger2:0.5.2")
+
+
 
     // retrofit for networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -104,24 +110,4 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-}
-
-android {
-    buildFeatures {
-        buildConfig = true
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-        }
-        getByName("debug") {
-            isDebuggable = true
-        }
-    }
 }
