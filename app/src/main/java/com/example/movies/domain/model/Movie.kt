@@ -1,17 +1,24 @@
 package com.example.movies.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.example.movies.data.db.model.DBMovie
 import java.time.LocalDate
-import java.time.LocalDateTime
 
-@Entity
 data class Movie(
-    @PrimaryKey val id: Int,
+    val id: Int,
     val title: String,
     val overview: String,
     val voteAverage: Double,
     val poster: String,
     val releaseDate: LocalDate,
-    val savedTimeStamp: Long,
-)
+) {
+
+    fun toDBModel(pageNumber: Int): DBMovie = DBMovie(
+        id = this.id,
+        title = this.title,
+        overview = this.overview,
+        voteAverage = this.voteAverage,
+        poster = this.poster,
+        releaseDate = this.releaseDate,
+        pageNumber = pageNumber
+    )
+}

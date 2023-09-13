@@ -9,4 +9,9 @@
     <string name="show_reviews">Show Reviews</string>
     <string name="profile_image">Profile Image</string>
     <string name="reviews">Reviews (%1$d)</string>
+    <string name="empty_db">Empty Database</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="empty_db_dialog_title">Are you sure you want to clear de database?</string>
+    <string name="empty_db_dialog_message">This action will delete every movie that was previously downloaded.</string>
 </resources>

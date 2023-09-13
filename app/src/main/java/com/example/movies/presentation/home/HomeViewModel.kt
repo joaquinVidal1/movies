@@ -1,78 +1,86 @@
 package com.example.movies.presentation.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
+import com.example.movies.domain.model.Movie
 import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
-import com.example.movies.domain.usecase.LoadMoviesUseCase
-import com.example.movies.domain.usecase.ObserveMoviesUseCase
+import com.example.movies.domain.usecase.EmptyDatabaseUseCase
+import com.example.movies.domain.usecase.GetAllMoviesUseCase
+import com.example.movies.domain.usecase.GetNextMoviesPageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val observeMoviesUseCase: ObserveMoviesUseCase,
-    private val loadMoviesUseCase: LoadMoviesUseCase,
-    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
+    private val getAllMoviesUseCase: GetAllMoviesUseCase,
+    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase,
+    private val emptyDatabaseUseCase: EmptyDatabaseUseCase,
+    private val getNextMoviesUseCase: GetNextMoviesPageUseCase
 ) : ViewModel() {
 
-    val movies = observeMoviesUseCase()
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading(listOf()))
+    val uiState: StateFlow<HomeUiState> = _uiState
 
-    private var currentPage = 1
-
-    private val _systemMessage = MutableLiveData<String?>(null)
-    private val _isLoading = MutableLiveData(false)
-
-    private val _uiState = MediatorLiveData<HomeUiState>(HomeUiState.Loading(listOf()))
-    val uiState: LiveData<HomeUiState> = _uiState.distinctUntilChanged()
+    private val currentMovies: List<Movie>
+        get() = uiState.value.data
 
     init {
         updateMovies()
-
-        _uiState.addSource(movies) {
-            _uiState.value = HomeUiState.Success(it)
-        }
-
-        _uiState.addSource(_systemMessage) {
-            _uiState.value = it?.let { HomeUiState.Error(errorMessage = it, data = movies.value ?: listOf()) }
-        }
-
-        _uiState.addSource(_isLoading) {
-            _uiState.value = if (it) {
-                HomeUiState.Loading(movies.value ?: listOf())
-            } else {
-                HomeUiState.Success(movies.value ?: listOf())
-            }
-        }
     }
 
     private fun updateMovies() {
         viewModelScope.launch {
             val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
-            val resultOfLoading = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
+            val movies = getAllMoviesUseCase(Unit)
             when {
-                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let { _systemMessage.postValue(it) }
-                resultOfLoading is Result.Error -> resultOfLoading.message?.let { _systemMessage.postValue(it) }
-            }
+                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let {
+                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
+                }
 
-            _isLoading.value = false
+                movies is Result.Error -> movies.message?.let {
+                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
+                }
+
+                else -> {
+                    val moviesList = (movies as Result.Success).value
+                    if (moviesList.isEmpty()) {
+                        getMoreMovies()
+                    } else {
+                        _uiState.value = HomeUiState.Success(data = moviesList)
+                    }
+                }
+            }
         }
     }
 
     suspend fun getMoreMovies() {
-        _isLoading.value = true
-        currentPage++
-        val result = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
-        if (result is Result.Error) {
-            currentPage--
-            result.message?.let { _systemMessage.postValue(it) }
+        _uiState.value = HomeUiState.Loading(currentMovies)
+        val newMovies = getNextMoviesUseCase(Unit)
+        if (newMovies is Result.Error) {
+            newMovies.message?.let { _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it) }
+        } else {
+            _uiState.value = HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
         }
-        _isLoading.value = false
+    }
+
+    fun onEmptyPressed() {
+        _uiState.value = HomeUiState.ShowEmptyDbDialog(currentMovies)
+    }
+
+    fun onConfirmEmptyDatabase() {
+        _uiState.value = HomeUiState.Loading(listOf())
+        viewModelScope.launch {
+            emptyDatabaseUseCase(Unit)
+            getMoreMovies()
+        }
+    }
+
+    fun onCloseDialog() {
+        _uiState.value = HomeUiState.Success(currentMovies)
     }
 
 }

@@ -25,7 +25,7 @@ import com.example.movies.presentation.movieReviews.components.MovieReview
 import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 
 @Composable
-fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 2) {
+fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 4) {
 
     val viewModel: MovieReviewsViewModel = hiltViewModel()
     val uiState: MovieReviewsUiState? by viewModel.uiState.observeAsState()

@@ -1,13 +1,12 @@
 package com.example.movies.data.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
+import com.example.movies.domain.model.Page
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,12 +18,26 @@ class MoviesRepositoryImpl @Inject constructor(
     private val moviesDao: MoviesDao, private val moviesService: MoviesService
 ) : MoviesRepository {
 
-    override val movies: LiveData<List<Movie>> = moviesDao.getMovies()
+    override suspend fun getAllMovies(): List<Movie> {
+        return withContext(Dispatchers.IO) {
+            moviesDao.getMoviesAsync().map { it.toModel() }
+        }
+    }
 
-    override suspend fun getMovies(page: Int) {
-        withContext(Dispatchers.IO) {
-            val newMovies = moviesService.getMovies(page = page).results.map { it.toLocalModel() }
-            moviesDao.insertMovies(newMovies)
+    override suspend fun getNextMoviesPage(): List<Movie> {
+        return withContext(Dispatchers.IO) {
+
+            val savedPages = moviesDao.getPageNumbers()
+            val nextPageNumber = findFirstGap(savedPages)
+
+            val response = moviesService.getMovies(page = nextPageNumber)
+            val newPage = Page(
+                number = response.page,
+                movies = response.results.map { it.toLocalModel() },
+                savedTimeStamp = System.currentTimeMillis()
+            )
+            moviesDao.insertPageWithMovies(newPage)
+            newPage.movies
         }
     }
 
@@ -47,6 +60,22 @@ class MoviesRepositoryImpl @Inject constructor(
                 it.copy(authorDetails = it.authorDetails?.copy(avatarPath = MOVIE_IMAGE_BASE_URL_400 + avatarPath))
             }, totalPages = response.totalPages
         )
+    }
+
+    override suspend fun emptyDatabase() {
+        withContext(Dispatchers.IO) {
+            moviesDao.emptyDatabase()
+        }
+    }
+
+    fun findFirstGap(pageNumbers: List<Int>): Int {
+        val sortedNumbers = pageNumbers.sorted()
+        for (i in 1 until sortedNumbers.size - 1) {
+            if (sortedNumbers[i + 1] - sortedNumbers[i] > 1) {
+                return sortedNumbers[i] + 1
+            }
+        }
+        return (sortedNumbers.lastOrNull() ?: 0) + 1
     }
 
 }
