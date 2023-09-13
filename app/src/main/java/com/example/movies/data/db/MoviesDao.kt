@@ -19,4 +19,7 @@ interface MoviesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(vies: List<Movie>)
+
+    @Query("DELETE FROM Movie")
+    suspend fun emptyDatabase()
 }

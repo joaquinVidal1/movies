@@ -82,7 +82,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
             )
 
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.onEmptyPressed() },
                 modifier = Modifier
                     .padding(top = 24.dp, end = 16.dp)
             ) {

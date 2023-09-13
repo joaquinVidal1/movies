@@ -8,6 +8,7 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
 import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
+import com.example.movies.domain.usecase.EmptyDatabaseUseCase
 import com.example.movies.domain.usecase.LoadMoviesUseCase
 import com.example.movies.domain.usecase.ObserveMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val observeMoviesUseCase: ObserveMoviesUseCase,
     private val loadMoviesUseCase: LoadMoviesUseCase,
-    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
+    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase,
+    private val emptyDatabaseUseCase: EmptyDatabaseUseCase
 ) : ViewModel() {
 
     val movies = observeMoviesUseCase()
@@ -73,6 +75,15 @@ class HomeViewModel @Inject constructor(
             result.message?.let { _systemMessage.postValue(it) }
         }
         _isLoading.value = false
+    }
+
+    fun onEmptyPressed() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            emptyDatabaseUseCase(Unit)
+            currentPage = 0
+            getMoreMovies()
+        }
     }
 
 }
