@@ -12,7 +12,7 @@ import com.example.movies.domain.model.Page
 @Dao
 interface MoviesDao {
 
-    @Query("SELECT * FROM DBMovie")
+    @Query("SELECT * FROM DBMovie ORDER BY DBMovie.pageNumber ASC")
     suspend fun getMoviesAsync(): List<DBMovie>
 
     @Query("DELETE FROM DBPage WHERE DBPage.savedTimeStamp < :deleteTimeMin")
@@ -36,4 +36,7 @@ interface MoviesDao {
 
     @Query("SELECT MAX(number) FROM DBPage")
     fun getLastPage(): Int?
+
+    @Query("SELECT number FROM DBPage ORDER BY number ASC")
+    fun getPageNumbers(): List<Int>
 }

@@ -26,8 +26,11 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getNextMoviesPage(): List<Movie> {
         return withContext(Dispatchers.IO) {
-            val lastPage = moviesDao.getLastPage() ?: 0
-            val response = moviesService.getMovies(page = lastPage + 1)
+
+            val savedPages = moviesDao.getPageNumbers()
+            val nextPageNumber = findFirstGap(savedPages)
+
+            val response = moviesService.getMovies(page = nextPageNumber)
             val newPage = Page(
                 number = response.page,
                 movies = response.results.map { it.toLocalModel() },
@@ -63,6 +66,16 @@ class MoviesRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             moviesDao.emptyDatabase()
         }
+    }
+
+    fun findFirstGap(pageNumbers: List<Int>): Int {
+        val sortedNumbers = pageNumbers.sorted()
+        for (i in 1 until sortedNumbers.size - 1) {
+            if (sortedNumbers[i + 1] - sortedNumbers[i] > 1) {
+                return sortedNumbers[i] + 1
+            }
+        }
+        return (sortedNumbers.lastOrNull() ?: 0) + 1
     }
 
 }
