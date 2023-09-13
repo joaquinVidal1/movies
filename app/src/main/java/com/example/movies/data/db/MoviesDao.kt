@@ -25,5 +25,5 @@ interface MoviesDao {
     suspend fun insertMovies(vies: List<Movie>)
 
     @Query("DELETE FROM Movie")
-    suspend fun emptyDb()
+    suspend fun emptyDatabase()
 }

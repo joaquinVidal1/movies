@@ -16,4 +16,6 @@ interface MoviesRepository {
     suspend fun deleteExpiredMovies()
 
     suspend fun getMovieReviews(movieId: Int, page: Int): MovieReviews
+
+    suspend fun emptyDatabase()
 }

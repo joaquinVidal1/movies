@@ -67,6 +67,12 @@ class MoviesRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun emptyDatabase() {
+        withContext(Dispatchers.IO){
+            moviesDao.emptyDatabase()
+        }
+    }
+
 }
 
 const val TIME_MOVIE_AVAILABLE = 24 * 60 * 60 * 1000

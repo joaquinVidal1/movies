@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.usecase.DeleteExpiredMoviesUseCase
+import com.example.movies.domain.usecase.EmptyDatabaseUseCase
 import com.example.movies.domain.usecase.LoadMoviesUseCase
 import com.example.movies.domain.usecase.ObserveMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val observeMoviesUseCase: ObserveMoviesUseCase,
     private val loadMoviesUseCase: LoadMoviesUseCase,
-    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase
+    private val deleteExpiredMoviesUseCase: DeleteExpiredMoviesUseCase,
+    private val emptyDatabaseUseCase: EmptyDatabaseUseCase
 ) : ViewModel() {
 
     val movies: Flow<List<Movie>> = observeMoviesUseCase()
@@ -60,6 +62,23 @@ class HomeViewModel @Inject constructor(
         } else {
             _uiState.value = HomeUiState.Success
         }
+    }
+
+    fun onEmptyPressed() {
+        _uiState.value = HomeUiState.ShowEmptyDbDialog(uiState.value?.data ?: listOf())
+    }
+
+    fun onConfirmEmptyDatabase() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            emptyDatabaseUseCase(Unit)
+            currentPage = 0
+            getMoreMovies()
+        }
+    }
+
+    fun onCloseDialog() {
+        _uiState.value = HomeUiState.Success(uiState.value?.data ?: listOf())
     }
 
 }
