@@ -49,7 +49,9 @@ fun MovieDetails(
                 .constrainAs(videoPreview) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
-                }
+                },
+            isFav = false,
+            onFavPressed = {}
         )
 
         Image(
