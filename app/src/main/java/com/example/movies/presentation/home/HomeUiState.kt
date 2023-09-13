@@ -1,7 +1,7 @@
 package com.example.movies.presentation.home
 
+import com.example.movies.domain.model.Movie
 
-sealed class HomeUiState {
 
 sealed class HomeUiState(val data: List<Movie>) {
 
@@ -11,5 +11,5 @@ sealed class HomeUiState(val data: List<Movie>) {
 
     internal class Loading(data: List<Movie>) : HomeUiState(data)
 
-    internal class ShowEmptyDbDialog(data: List<Movie>): HomeUiState(data)
+    internal class ShowEmptyDbDialog(data: List<Movie>) : HomeUiState(data)
 }

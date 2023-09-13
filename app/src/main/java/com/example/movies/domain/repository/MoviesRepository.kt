@@ -3,13 +3,12 @@ package com.example.movies.domain.repository
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
-import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    val movies: Flow<List<Movie>>
+    suspend fun getAllMovies(): List<Movie>
 
-    suspend fun getMovies(currentMovies: Int)
+    suspend fun getNextMoviesPage(): List<Movie>
 
     suspend fun getMovieDetails(movieId: Int): DetailsMovie
 

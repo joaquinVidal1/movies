@@ -1,29 +1,28 @@
 package com.example.movies.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.Page
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MoviesDao {
 
-    @Query("SELECT * FROM Movie")
-    fun getMovies(): Flow<List<Movie>>
+    @Query("SELECT * FROM Page")
+    suspend fun getMoviesAsync(): List<Page>
 
-    @Query("SELECT * FROM Movie")
-    suspend fun getMoviesAsync():List<Movie>
-
-    @Query("DELETE FROM Movie WHERE Movie.savedTimeStamp < :deleteTimeMin")
+    @Query("DELETE FROM Page WHERE Page.savedTimeStamp < :deleteTimeMin")
     fun deleteExpiredMovies(deleteTimeMin: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMovies(vies: List<Movie>)
+    suspend fun insertPage(page: Page)
 
-    @Query("DELETE FROM Movie")
+    @Query("DELETE FROM Page")
     suspend fun emptyDatabase()
+
+    @Query("SELECT MAX(number) FROM Page")
+    fun getLastPage(): Int?
 }
