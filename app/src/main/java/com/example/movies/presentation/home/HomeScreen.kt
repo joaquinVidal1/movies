@@ -3,18 +3,23 @@ package com.example.movies.presentation.home
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.Delete
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,27 +67,37 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
         }
     })
 
-    Box(contentAlignment = Alignment.BottomCenter) {
+    Column {
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+
+            Text(
+                text = stringResource(R.string.movies),
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                textAlign = TextAlign.Start,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(top = 24.dp, start = 16.dp)
+            )
+
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .padding(top = 24.dp, end = 16.dp)
+            ) {
+                Icon(Icons.Sharp.Delete, contentDescription = stringResource(id = R.string.empty_db))
+            }
+        }
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 150.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 16.dp, start = 16.dp, end = 16.dp),
+            contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             state = listState,
         ) {
-
-            item(span = { GridItemSpan(maxCurrentLineSpan) }, content = {
-                Text(
-                    text = stringResource(R.string.movies),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    textAlign = TextAlign.Start,
-                    color = Color.Black,
-                    modifier = Modifier.padding(top = 32.dp),
-                )
-            })
 
             items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
                 MovieCover(movie = movie,
