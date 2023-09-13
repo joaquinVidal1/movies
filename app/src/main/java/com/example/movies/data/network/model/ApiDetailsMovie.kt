@@ -8,7 +8,7 @@ data class ApiDetailsMovie(
     @Json(name = "imdb_id") val imdbId: String,
     @Json(name = "video") val video: Boolean,
     @Json(name = "title") val title: String,
-    @Json(name = "backdrop_path") val backdropPath: String,
+    @Json(name = "backdrop_path") val backdropPath: String?,
     @Json(name = "revenue") val revenue: Long,
     @Json(name = "genres") val genres: List<Genre>,
     @Json(name = "popularity") val popularity: Float,
