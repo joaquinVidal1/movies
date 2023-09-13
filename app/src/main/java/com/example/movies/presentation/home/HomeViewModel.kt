@@ -72,7 +72,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onConfirmEmptyDatabase() {
-        _uiState.value = HomeUiState.Loading(currentMovies)
+        _uiState.value = HomeUiState.Loading(listOf())
         viewModelScope.launch {
             emptyDatabaseUseCase(Unit)
             getMoreMovies()

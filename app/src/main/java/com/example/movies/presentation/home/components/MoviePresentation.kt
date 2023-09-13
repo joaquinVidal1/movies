@@ -91,7 +91,6 @@ fun MoviePresentationPreview() {
         releaseDate = LocalDate.parse("2023-08-02"),
         voteAverage = 6.9,
         poster = "/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg",
-        savedTimeStamp = System.currentTimeMillis()
     )
     Surface(color = MaterialTheme.colorScheme.surface) {
         MovieCover(

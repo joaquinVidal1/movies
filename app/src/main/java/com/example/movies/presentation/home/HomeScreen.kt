@@ -54,7 +54,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
     val context = LocalContext.current
     val listState = rememberLazyGridState()
     val uiState: HomeUiState? by viewModel.uiState.collectAsState()
-    val movies by viewModel.movies.collectAsState(initial = listOf())
 
     val loadMore by remember {
         derivedStateOf {
@@ -68,7 +67,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
 
     LaunchedEffect(key1 = loadMore, block = {
         if (loadMore) {
-            viewModel.getMoreMovies(movies.size)
+            viewModel.getMoreMovies()
         }
     })
 

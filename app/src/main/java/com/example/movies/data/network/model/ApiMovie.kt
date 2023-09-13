@@ -25,7 +25,6 @@ data class ApiMovie(
         id = id,
         title = title,
         overview = overview,
-        savedTimeStamp = System.currentTimeMillis(),
         releaseDate = releaseDate?.fromBackendDateToLocalDate() ?: LocalDate.now(),
         voteAverage = voteAverage,
         poster = MOVIE_IMAGE_BASE_URL + posterPath,

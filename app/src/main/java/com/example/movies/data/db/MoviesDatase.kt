@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.movies.data.db.model.DBMovie
+import com.example.movies.data.db.model.DBPage
 
-@Database(entities = [DBMovie::class, DBMovie::class], version = 1, exportSchema = false)
+@Database(entities = [DBMovie::class, DBPage::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class MoviesDatabase : RoomDatabase() {
     abstract val moviesDao: MoviesDao
