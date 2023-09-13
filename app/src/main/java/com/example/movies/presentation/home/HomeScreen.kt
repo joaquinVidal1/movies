@@ -3,6 +3,7 @@ package com.example.movies.presentation.home
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.sharp.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 import com.example.movies.presentation.home.components.MovieCover
 
 @Composable
@@ -77,58 +80,68 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 2) {
                 fontSize = 32.sp,
                 textAlign = TextAlign.Start,
                 color = Color.Black,
-                modifier = Modifier
-                    .padding(top = 24.dp, start = 16.dp)
+                modifier = Modifier.padding(top = 24.dp, start = 16.dp)
             )
 
             IconButton(
-                onClick = { viewModel.onEmptyPressed() },
-                modifier = Modifier
-                    .padding(top = 24.dp, end = 16.dp)
+                onClick = { viewModel.onEmptyPressed() }, modifier = Modifier.padding(top = 24.dp, end = 16.dp)
             ) {
                 Icon(Icons.Sharp.Delete, contentDescription = stringResource(id = R.string.empty_db))
             }
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 150.dp),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            state = listState,
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
 
-            items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
-                MovieCover(movie = movie,
-                    modifier = Modifier
-                        .size(250.dp)
-                        .clickable { onMoviePressed(movie) }
-                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                        .clip(RoundedCornerShape(8.dp)))
-            }
-        }
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 150.dp),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                state = listState,
+            ) {
 
-        when (uiState) {
-            is HomeUiState.Loading -> {
-                CircularProgressIndicator(
-                    color = colorResource(id = R.color.orange),
-                    modifier = Modifier
-                        .padding(bottom = 32.dp)
-                        .size(54.dp),
-                    strokeWidth = 6.dp
-                )
+                items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
+                    MovieCover(movie = movie,
+                        modifier = Modifier
+                            .size(250.dp)
+                            .clickable { onMoviePressed(movie) }
+                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
+                            .clip(RoundedCornerShape(8.dp)))
+                }
             }
 
-            is HomeUiState.Error -> {
-                Toast.makeText(
-                    context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                ).show()
+            when (uiState) {
+                is HomeUiState.Loading -> {
+                    CircularProgressIndicator(
+                        color = colorResource(id = R.color.orange),
+                        modifier = Modifier
+                            .padding(bottom = 32.dp)
+                            .size(54.dp)
+                            .align(Alignment.BottomCenter),
+                        strokeWidth = 6.dp
+                    )
+                }
+
+                is HomeUiState.Error -> {
+                    Toast.makeText(
+                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is HomeUiState.Success -> {}
+
+                is HomeUiState.ShowEmptyDbDialog -> {
+                    ConfirmActionAlertDialog(title = stringResource(id = R.string.empty_db_dialog_title),
+                        message = stringResource(id = R.string.empty_db_dialog_message),
+                        icon = Icons.Default.Delete,
+                        onCloseDialog = { viewModel.onCloseDialog() }) {
+                        viewModel.onConfirmEmptyDatabase()
+                    }
+                }
+
+                null -> {}
             }
-
-            is HomeUiState.Success -> {}
-
-            null -> {}
         }
     }
 }

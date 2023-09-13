@@ -78,12 +78,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onEmptyPressed() {
+        _uiState.value = HomeUiState.ShowEmptyDbDialog(uiState.value?.data ?: listOf())
+    }
+
+    fun onConfirmEmptyDatabase() {
         _isLoading.value = true
         viewModelScope.launch {
             emptyDatabaseUseCase(Unit)
             currentPage = 0
             getMoreMovies()
         }
+    }
+
+    fun onCloseDialog() {
+        _uiState.value = HomeUiState.Success(uiState.value?.data ?: listOf())
     }
 
 }
