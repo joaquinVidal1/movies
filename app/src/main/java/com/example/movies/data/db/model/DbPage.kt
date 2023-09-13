@@ -4,6 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Page(
+data class DBPage(
     @PrimaryKey val number: Int, val savedTimeStamp: Long
 )

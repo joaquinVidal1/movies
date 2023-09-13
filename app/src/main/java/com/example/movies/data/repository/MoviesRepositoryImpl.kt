@@ -20,7 +20,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getAllMovies(): List<Movie> {
         return withContext(Dispatchers.IO) {
-            moviesDao.getMoviesAsync().map { it.movies }.flatten()
+            moviesDao.getMoviesAsync().map { it.toModel() }
         }
     }
 
@@ -33,7 +33,7 @@ class MoviesRepositoryImpl @Inject constructor(
                 movies = response.results.map { it.toLocalModel() },
                 savedTimeStamp = System.currentTimeMillis()
             )
-            moviesDao.insertPage(newPage)
+            moviesDao.insertPageWithMovies(newPage)
             newPage.movies
         }
     }
