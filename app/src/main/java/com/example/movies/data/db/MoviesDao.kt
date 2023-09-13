@@ -2,6 +2,7 @@ package com.example.movies.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -22,4 +23,7 @@ interface MoviesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(vies: List<Movie>)
+
+    @Query("DELETE FROM Movie")
+    suspend fun emptyDb()
 }

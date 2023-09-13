@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(
     private fun updateMovies() {
         viewModelScope.launch {
             val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
-            val resultOfLoading = loadMoviesUseCase(LoadMoviesUseCase.Params(currentPage))
+            val resultOfLoading = loadMoviesUseCase(LoadMoviesUseCase.Params(0))
             when {
                 resultOfDeleting is Result.Error -> resultOfDeleting.message?.let {
                     _uiState.value = HomeUiState.Error(it)
