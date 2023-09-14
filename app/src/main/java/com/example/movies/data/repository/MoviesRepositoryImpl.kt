@@ -1,6 +1,7 @@
 package com.example.movies.data.repository
 
 import com.example.movies.data.db.MoviesDao
+import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
 import com.example.movies.data.network.model.MovieFavouriteRequestBody
@@ -70,9 +71,27 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addMovieToFavorite(movieId: Int) {
-        moviesService.addMovieToFavorite(
+        moviesService.changeMovieFavedStatus(
             body = MovieFavouriteRequestBody(mediaId = movieId, favorite = true)
         )
+        withContext(Dispatchers.IO) {
+            moviesDao.addMovieToFav(DBFavedMovie(id = movieId))
+        }
+    }
+
+    override suspend fun removeMovieFromFavorite(movieId: Int) {
+        moviesService.changeMovieFavedStatus(
+            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = false)
+        )
+        withContext(Dispatchers.IO) {
+            moviesDao.removeMovieFromFav(movieId = movieId)
+        }
+    }
+
+    override suspend fun getMovieIsFaved(movieId: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            moviesDao.isMovieFaved(movieId)
+        }
     }
 
     private fun findFirstGap(pageNumbers: List<Int>): Int {

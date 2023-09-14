@@ -5,8 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.db.model.DBMovie
 import com.example.movies.data.db.model.DBPage
+import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.Page
 
 @Dao
@@ -34,9 +36,18 @@ interface MoviesDao {
     @Query("DELETE FROM DBPage")
     suspend fun emptyDatabase()
 
-    @Query("SELECT MAX(number) FROM DBPage")
-    fun getLastPage(): Int?
-
     @Query("SELECT number FROM DBPage ORDER BY number ASC")
     fun getPageNumbers(): List<Int>
+
+    @Query("SELECT * FROM DBMovie WHERE DBMovie.id in (SELECT id FROM DBFavedMovie)")
+    fun getFavMovies(): List<DBMovie>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addMovieToFav(movie: DBFavedMovie)
+
+   @Query("DELETE FROM DBFavedMovie WHERE DBFavedMovie.id = :movieId")
+    fun removeMovieFromFav(movieId: Int)
+
+    @Query("SELECT COUNT(*) > 0 FROM DBFavedMovie WHERE id = :movieId")
+    fun isMovieFaved(movieId: Int): Boolean
 }

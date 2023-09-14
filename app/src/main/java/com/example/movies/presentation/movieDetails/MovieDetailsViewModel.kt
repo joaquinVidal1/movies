@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
 import com.example.movies.domain.usecase.AddMovieToFavoriteUseCase
+import com.example.movies.domain.usecase.GetIsMovieFavedUseCase
 import com.example.movies.domain.usecase.GetMovieDetailsUseCase
+import com.example.movies.domain.usecase.RemoveMovieFromFavoriteUseCase
 import com.example.movies.presentation.destinations.MovieDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +19,9 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getMovieDetailsUSeCase: GetMovieDetailsUseCase,
-    private val addMovieToFavoriteUseCase: AddMovieToFavoriteUseCase
+    private val addMovieToFavoriteUseCase: AddMovieToFavoriteUseCase,
+    private val removeMovieFromFavoriteUseCase: RemoveMovieFromFavoriteUseCase,
+    private val getIsMovieFavedUseCase: GetIsMovieFavedUseCase
 ) : ViewModel() {
 
     private val movieId: Int = savedStateHandle[MovieDetailsDestination.movieIdArg]
@@ -46,7 +50,7 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             isFav.value?.let {
                 if (it) {
-                    //TODO
+                    removeMovieFromFavoriteUseCase(RemoveMovieFromFavoriteUseCase.Params(movieId = movieId))
                 } else {
                     addMovieToFavoriteUseCase(AddMovieToFavoriteUseCase.Params(movieId = movieId))
                 }
@@ -55,6 +59,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun isMovieFaved(movieId: Int): Boolean {
+    private suspend fun isMovieFaved(movieId: Int): Boolean {
+        getIsMovieFavedUseCase
     }
 }

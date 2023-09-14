@@ -32,7 +32,7 @@ interface MoviesService {
     ): ApiPaginatedResponse<MovieReview>
 
     @POST("account/{accountId}/favorite")
-    suspend fun addMovieToFavorite(
+    suspend fun changeMovieFavedStatus(
         @Body body: MovieFavouriteRequestBody
     ): MovieFavoriteResponse
 
