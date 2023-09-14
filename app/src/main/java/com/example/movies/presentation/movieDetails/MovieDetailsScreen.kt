@@ -34,11 +34,16 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
     val viewModel: MovieDetailsViewModel = hiltViewModel()
     val context = LocalContext.current
     val uiState by viewModel.uiState.observeAsState()
+    val isFav by viewModel.isFav.observeAsState(false)
 
     uiState?.let { state ->
         when (state) {
             is MovieDetailsUiState.Success -> {
-                Content(movie = state.movie, onBackPressed = onBackPressed, onShowReviewsPressed = onShowReviewsPressed)
+                Content(movie = state.movie,
+                    onBackPressed = onBackPressed,
+                    isFav = isFav,
+                    onShowReviewsPressed = onShowReviewsPressed,
+                    onFavPressed = { viewModel.onFavoriteButtonPressed() })
             }
 
             is MovieDetailsUiState.Error -> {
@@ -49,8 +54,7 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
             MovieDetailsUiState.Loading -> {
                 Box {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Center),
-                        color = colorResource(id = R.color.orange)
+                        modifier = Modifier.align(Center), color = colorResource(id = R.color.orange)
                     )
                 }
             }
@@ -60,7 +64,13 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
 }
 
 @Composable
-fun Content(movie: DetailsMovie, onBackPressed: () -> Unit, onShowReviewsPressed: (DetailsMovie) -> Unit) {
+fun Content(
+    movie: DetailsMovie,
+    isFav: Boolean,
+    onBackPressed: () -> Unit,
+    onShowReviewsPressed: (DetailsMovie) -> Unit,
+    onFavPressed: () -> Unit
+) {
 
     Column(verticalArrangement = Arrangement.SpaceBetween) {
 
@@ -72,6 +82,8 @@ fun Content(movie: DetailsMovie, onBackPressed: () -> Unit, onShowReviewsPressed
             posterPath = movie.posterPath,
             videoPreviewPath = movie.videoPreviewPath,
             onBackPressed = onBackPressed,
+            isFav = isFav,
+            onFavPressed = onFavPressed,
             modifier = Modifier
         )
 

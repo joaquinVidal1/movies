@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
+import com.example.movies.domain.usecase.AddMovieToFavoriteUseCase
 import com.example.movies.domain.usecase.GetMovieDetailsUseCase
 import com.example.movies.presentation.destinations.MovieDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle, private val getMovieDetailsUSeCase: GetMovieDetailsUseCase
+    savedStateHandle: SavedStateHandle,
+    private val getMovieDetailsUSeCase: GetMovieDetailsUseCase,
+    private val addMovieToFavoriteUseCase: AddMovieToFavoriteUseCase
 ) : ViewModel() {
 
     private val movieId: Int = savedStateHandle[MovieDetailsDestination.movieIdArg]
@@ -22,6 +25,9 @@ class MovieDetailsViewModel @Inject constructor(
 
     private val _uiState: MutableLiveData<MovieDetailsUiState> = MutableLiveData(MovieDetailsUiState.Loading)
     val uiState: LiveData<MovieDetailsUiState> = _uiState
+
+    private val _isFav = MutableLiveData<Boolean>(isMovieFaved(movieId))
+    val isFav: LiveData<Boolean> = _isFav
 
     init {
         getMovieDetails(movieId)
@@ -34,5 +40,21 @@ class MovieDetailsViewModel @Inject constructor(
                 movieDetails.throwable?.let { MovieDetailsUiState.Error(it) }
             } else MovieDetailsUiState.Success((movieDetails as Result.Success).value)
         }
+    }
+
+    fun onFavoriteButtonPressed() {
+        viewModelScope.launch {
+            isFav.value?.let {
+                if (it) {
+                    //TODO
+                } else {
+                    addMovieToFavoriteUseCase(AddMovieToFavoriteUseCase.Params(movieId = movieId))
+                }
+                _isFav.value = !it
+            }
+        }
+    }
+
+    private fun isMovieFaved(movieId: Int): Boolean {
     }
 }

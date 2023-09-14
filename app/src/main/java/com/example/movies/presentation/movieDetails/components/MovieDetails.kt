@@ -32,6 +32,8 @@ fun MovieDetails(
     posterPath: String,
     videoPreviewPath: String,
     onBackPressed: () -> Unit,
+    isFav: Boolean,
+    onFavPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
@@ -50,8 +52,8 @@ fun MovieDetails(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 },
-            isFav = false,
-            onFavPressed = {}
+            isFav = isFav,
+            onFavPressed = onFavPressed
         )
 
         Image(

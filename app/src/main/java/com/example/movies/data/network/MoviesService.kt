@@ -40,6 +40,7 @@ interface MoviesService {
     companion object {
         const val DISCOVER_MOVIES_PATH = "discover/movie"
         const val MOVIE_DETAILS_PATH = "movie/"
+        const val account_id = 20375605
 
     }
 }
