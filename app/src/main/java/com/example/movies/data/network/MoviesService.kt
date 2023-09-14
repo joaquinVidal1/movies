@@ -3,8 +3,12 @@ package com.example.movies.data.network
 import com.example.movies.data.network.model.ApiDetailsMovie
 import com.example.movies.data.network.model.ApiMovie
 import com.example.movies.data.network.model.ApiPaginatedResponse
+import com.example.movies.data.network.model.MovieFavoriteResponse
+import com.example.movies.data.network.model.MovieFavouriteRequestBody
 import com.example.movies.domain.model.MovieReview
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -26,6 +30,11 @@ interface MoviesService {
     suspend fun getMovieReviews(
         @Path("movieId") movieId: Int
     ): ApiPaginatedResponse<MovieReview>
+
+    @POST("account/{accountId}/favorite")
+    suspend fun addMovieToFavorite(
+        @Body body: MovieFavouriteRequestBody
+    ): MovieFavoriteResponse
 
 
     companion object {

@@ -3,6 +3,7 @@ package com.example.movies.data.repository
 import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
+import com.example.movies.data.network.model.MovieFavouriteRequestBody
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
@@ -68,7 +69,13 @@ class MoviesRepositoryImpl @Inject constructor(
         }
     }
 
-    fun findFirstGap(pageNumbers: List<Int>): Int {
+    override suspend fun addMovieToFavorite(movieId: Int) {
+        moviesService.addMovieToFavorite(
+            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = true)
+        )
+    }
+
+    private fun findFirstGap(pageNumbers: List<Int>): Int {
         val sortedNumbers = pageNumbers.sorted()
         for (i in 1 until sortedNumbers.size - 1) {
             if (sortedNumbers[i + 1] - sortedNumbers[i] > 1) {

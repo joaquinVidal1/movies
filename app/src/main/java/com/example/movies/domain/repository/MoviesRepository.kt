@@ -17,4 +17,6 @@ interface MoviesRepository {
     suspend fun getMovieReviews(movieId: Int, page: Int): MovieReviews
 
     suspend fun emptyDatabase()
+
+    suspend fun addMovieToFavorite(movieId: Int)
 }
