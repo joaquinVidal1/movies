@@ -15,4 +15,6 @@
     <string name="empty_db_dialog_title">Are you sure you want to clear de database?</string>
     <string name="empty_db_dialog_message">This action will delete every movie that was previously downloaded.</string>
     <string name="fav_button">Fav button</string>
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_favs">Favs</string>
 </resources>

@@ -1,26 +1,19 @@
 package com.example.movies.presentation.main
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.movies.presentation.destinations.HomeDestination
-import com.example.movies.presentation.destinations.MovieDetailsDestination
-import com.example.movies.presentation.destinations.MovieReviewsDestination
 import com.example.movies.presentation.destinations.MoviesNavHost
-import com.example.movies.presentation.home.HomeScreen
-import com.example.movies.presentation.movieDetails.MovieDetailsScreen
-import com.example.movies.presentation.movieReviews.MovieReviewsScreen
 import com.example.movies.presentation.theme.MoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,11 +32,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
-        MoviesNavHost(navController = navController)
+
+        Scaffold(bottomBar = { MoviesNavigationBar() }) {
+            MoviesNavHost(navController = navController, modifier = Modifier.padding(it))
+        }
     }
 }
 

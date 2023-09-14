@@ -112,4 +112,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.compose.material:material:1.3.1")
 }

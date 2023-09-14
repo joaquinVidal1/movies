@@ -27,4 +27,8 @@ object MovieReviewsDestination : MoviesDestination {
         navArgument(movieIdArg) { type = NavType.IntType },
         navArgument(moviePosterPathArg) { type = NavType.StringType }
     )
+
+    object FavsDestination : MoviesDestination {
+        override val route: String = "favs"
+    }
 }

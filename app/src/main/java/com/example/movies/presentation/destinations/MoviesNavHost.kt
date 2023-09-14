@@ -1,6 +1,7 @@
 package com.example.movies.presentation.destinations
 
 import android.net.Uri
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -40,6 +41,10 @@ fun MoviesNavHost(
                 posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
                     ?: throw Exception("No value passed for movie poster")
             )
+        }
+
+        composable(route = MovieReviewsDestination.FavsDestination.route){
+            Text(text = "Favs")
         }
     }
 }
