@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.movies.R
 
 sealed class Screen(val route: String, @StringRes val labelId: Int, val icon: ImageVector) {
-    object Profile :
+    object Home :
         Screen(route = HomeDestination.route, labelId = R.string.bottom_navigation_home, icon = Icons.Default.Home)
 
     object Favs : Screen(

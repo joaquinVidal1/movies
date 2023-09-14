@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.movies.presentation.destinations.MoviesNavHost
+import com.example.movies.presentation.destinations.Screen
 import com.example.movies.presentation.theme.MoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +39,12 @@ fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
 
-        Scaffold(bottomBar = { MoviesNavigationBar() }) {
+        Scaffold(bottomBar = {
+            MoviesNavigationBar(
+                items = listOf(Screen.Home, Screen.Favs),
+                navController = navController
+            )
+        }) {
             MoviesNavHost(navController = navController, modifier = Modifier.padding(it))
         }
     }
