@@ -1,6 +1,5 @@
 package com.example.movies.presentation.main
 
-import androidx.compose.foundation.background
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -20,7 +19,7 @@ import com.example.movies.presentation.destinations.Screen
 
 @Composable
 fun MoviesNavigationBar(modifier: Modifier = Modifier, items: List<Screen>, navController: NavController) {
-    BottomNavigation(modifier = modifier.background(color = Color.DarkGray)) {
+    BottomNavigation(backgroundColor = Color.DarkGray) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { screen ->
@@ -30,16 +29,10 @@ fun MoviesNavigationBar(modifier: Modifier = Modifier, items: List<Screen>, navC
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
                     navController.navigate(screen.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
                         launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
                 }

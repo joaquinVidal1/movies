@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.common.components.MoviesInfiniteScrollGrid
 import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 import com.example.movies.presentation.home.components.MovieCover
 
@@ -54,21 +55,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
     val listState = rememberLazyGridState()
     val uiState: HomeUiState? by viewModel.uiState.collectAsState()
 
-    val loadMore by remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItems = layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
-            val value = (lastVisibleItemIndex > (totalItems - buffer)) && (totalItems > 1)
-            value
-        }
-    }
-
-    LaunchedEffect(key1 = loadMore, block = {
-        if (loadMore) {
-            viewModel.getMoreMovies()
-        }
-    })
 
     Column {
 
@@ -90,58 +76,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                state = listState,
-            ) {
-
-                items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
-                    MovieCover(movie = movie,
-                        modifier = Modifier
-                            .size(250.dp)
-                            .clickable { onMoviePressed(movie) }
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                            .clip(RoundedCornerShape(8.dp)))
-                }
-            }
-
-            when (uiState) {
-                is HomeUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = colorResource(id = R.color.orange),
-                        modifier = Modifier
-                            .padding(bottom = 32.dp)
-                            .size(54.dp)
-                            .align(Alignment.BottomCenter),
-                        strokeWidth = 6.dp
-                    )
-                }
-
-                is HomeUiState.Error -> {
-                    Toast.makeText(
-                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is HomeUiState.Success -> {}
-
-                is HomeUiState.ShowEmptyDbDialog -> {
-                    ConfirmActionAlertDialog(title = stringResource(id = R.string.empty_db_dialog_title),
-                        message = stringResource(id = R.string.empty_db_dialog_message),
-                        icon = Icons.Default.Delete,
-                        onCloseDialog = { viewModel.onCloseDialog() }) {
-                        viewModel.onConfirmEmptyDatabase()
-                    }
-                }
-
-                null -> {}
-            }
-        }
+        MoviesInfiniteScrollGrid()
     }
 }
