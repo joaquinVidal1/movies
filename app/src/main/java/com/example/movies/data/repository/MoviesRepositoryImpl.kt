@@ -71,18 +71,18 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addMovieToFavorite(movieId: Int) {
-        moviesService.changeMovieFavedStatus(
-            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = true)
-        )
+//        val response = moviesService.changeMovieFavedStatus(
+//            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = true)
+//        )
         withContext(Dispatchers.IO) {
             moviesDao.addMovieToFav(DBFavedMovie(id = movieId))
         }
     }
 
     override suspend fun removeMovieFromFavorite(movieId: Int) {
-        moviesService.changeMovieFavedStatus(
-            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = false)
-        )
+//        moviesService.changeMovieFavedStatus(
+//            body = MovieFavouriteRequestBody(mediaId = movieId, favorite = false)
+//        )
         withContext(Dispatchers.IO) {
             moviesDao.removeMovieFromFav(movieId = movieId)
         }

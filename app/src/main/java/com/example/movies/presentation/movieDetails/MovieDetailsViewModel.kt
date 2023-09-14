@@ -30,7 +30,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val _uiState: MutableLiveData<MovieDetailsUiState> = MutableLiveData(MovieDetailsUiState.Loading)
     val uiState: LiveData<MovieDetailsUiState> = _uiState
 
-    private val _isFav = MutableLiveData<Boolean>(isMovieFaved(movieId))
+    private val _isFav = MutableLiveData<Boolean>()
     val isFav: LiveData<Boolean> = _isFav
 
     init {
@@ -39,6 +39,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
+            _isFav.value = isMovieFaved(movieId)
             val movieDetails = getMovieDetailsUSeCase(params = GetMovieDetailsUseCase.Params(movieId = movieId))
             _uiState.value = if (movieDetails is Result.Error) {
                 movieDetails.throwable?.let { MovieDetailsUiState.Error(it) }
@@ -60,6 +61,8 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun isMovieFaved(movieId: Int): Boolean {
-        getIsMovieFavedUseCase
+        return getIsMovieFavedUseCase(GetIsMovieFavedUseCase.Params(movieId)).let {
+            if (it is Result.Success) it.value else throw Exception()
+        }
     }
 }

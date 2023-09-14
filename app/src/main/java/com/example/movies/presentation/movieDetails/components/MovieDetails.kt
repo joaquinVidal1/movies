@@ -107,6 +107,8 @@ fun MovieDetailsPreview() {
             voteAverage = 9.8f,
             posterPath = "",
             videoPreviewPath = "",
-            onBackPressed = {})
+            onBackPressed = {},
+            isFav = false,
+            onFavPressed = {})
     }
 }

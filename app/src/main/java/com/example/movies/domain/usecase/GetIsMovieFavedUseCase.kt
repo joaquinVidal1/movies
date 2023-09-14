@@ -10,7 +10,7 @@ class GetIsMovieFavedUseCase @Inject constructor(private val moviesRepository: M
     data class Params(val movieId: Int)
 
     override suspend fun execute(params: Params): Boolean {
-        moviesRepository.getFavedMovies()
+        return moviesRepository.getMovieIsFaved(params.movieId)
     }
 
 }

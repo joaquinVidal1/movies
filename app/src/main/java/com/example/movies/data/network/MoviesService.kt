@@ -31,7 +31,7 @@ interface MoviesService {
         @Path("movieId") movieId: Int
     ): ApiPaginatedResponse<MovieReview>
 
-    @POST("account/{accountId}/favorite")
+    @POST("account/$account_id/favorite")
     suspend fun changeMovieFavedStatus(
         @Body body: MovieFavouriteRequestBody
     ): MovieFavoriteResponse
