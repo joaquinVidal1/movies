@@ -1,12 +1,12 @@
 package com.example.movies.presentation.destinations
 
 import android.net.Uri
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.movies.presentation.fav.FavScreen
 import com.example.movies.presentation.home.HomeScreen
 import com.example.movies.presentation.movieDetails.MovieDetailsScreen
 import com.example.movies.presentation.movieReviews.MovieReviewsScreen
@@ -43,8 +43,8 @@ fun MoviesNavHost(
             )
         }
 
-        composable(route = MovieReviewsDestination.FavsDestination.route){
-            Text(text = "Favs")
+        composable(route = MovieReviewsDestination.FavsDestination.route) {
+            FavScreen(onMoviePressed = { navController.navigateToMovieDetails(it.id) })
         }
     }
 }

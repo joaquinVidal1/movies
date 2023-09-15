@@ -10,7 +10,7 @@ class RemoveMovieFromFavoriteUseCase @Inject constructor(private val moviesRepos
     data class Params(val movieId: Int)
 
     override suspend fun execute(params: Params) {
-        moviesRepository.addMovieToFavorite(params.movieId)
+        moviesRepository.removeMovieFromFavorite(params.movieId)
     }
 
 }

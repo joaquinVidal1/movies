@@ -4,7 +4,6 @@ import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
-import com.example.movies.data.network.model.MovieFavouriteRequestBody
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
@@ -91,6 +90,12 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getMovieIsFaved(movieId: Int): Boolean {
         return withContext(Dispatchers.IO) {
             moviesDao.isMovieFaved(movieId)
+        }
+    }
+
+    override suspend fun getFavedMovies(): List<Movie> {
+        return withContext(Dispatchers.IO) {
+            moviesDao.getFavMovies().map { it.toModel() }
         }
     }
 

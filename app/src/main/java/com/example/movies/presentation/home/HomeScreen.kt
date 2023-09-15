@@ -36,7 +36,7 @@ import com.example.movies.presentation.common.components.MoviesInfiniteScrollGri
 import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 
 @Composable
-fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
+fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
@@ -67,7 +67,8 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
             MoviesInfiniteScrollGrid(
                 onMoviePressed = onMoviePressed,
                 loadMoreMovies = { viewModel.getMoreMovies() },
-                movies = uiState.data
+                movies = uiState.data,
+                buffer = 4
             )
 
             when (uiState) {
