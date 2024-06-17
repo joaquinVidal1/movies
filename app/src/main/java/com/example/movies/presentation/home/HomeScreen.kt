@@ -44,8 +44,10 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
 
     Column {
 
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(
                 text = stringResource(R.string.movies),
                 fontWeight = FontWeight.Bold,
@@ -56,9 +58,13 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
             )
 
             IconButton(
-                onClick = { viewModel.onEmptyPressed() }, modifier = Modifier.padding(top = 24.dp, end = 16.dp)
+                onClick = { viewModel.onEmptyPressed() },
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp)
             ) {
-                Icon(Icons.Sharp.Delete, contentDescription = stringResource(id = R.string.empty_db))
+                Icon(
+                    Icons.Sharp.Delete,
+                    contentDescription = stringResource(id = R.string.empty_db)
+                )
             }
         }
 
@@ -85,7 +91,9 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
 
                 is HomeUiState.Error -> {
                     Toast.makeText(
-                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
+                        context,
+                        (uiState as HomeUiState.Error).errorMessage,
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
 

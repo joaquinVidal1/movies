@@ -3,6 +3,7 @@ package com.example.movies.domain.repository
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
+import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
@@ -24,5 +25,5 @@ interface MoviesRepository {
 
     suspend fun getMovieIsFaved(movieId: Int): Boolean
 
-    suspend fun getFavedMovies(): List<Movie>
+    fun getFavedMovies(): Flow<List<Movie>>
 }

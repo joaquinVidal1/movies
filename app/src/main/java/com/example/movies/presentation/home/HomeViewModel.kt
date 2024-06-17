@@ -61,9 +61,12 @@ class HomeViewModel @Inject constructor(
         _uiState.value = HomeUiState.Loading(currentMovies)
         val newMovies = getNextMoviesUseCase(Unit)
         if (newMovies is Result.Error) {
-            newMovies.message?.let { _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it) }
+            newMovies.message?.let {
+                _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
+            }
         } else {
-            _uiState.value = HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+            _uiState.value =
+                HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
         }
     }
 

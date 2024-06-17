@@ -9,6 +9,7 @@ import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.db.model.DBMovie
 import com.example.movies.data.db.model.DBPage
 import com.example.movies.domain.model.Page
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MoviesDao {
@@ -44,7 +45,7 @@ interface MoviesDao {
         INNER JOIN DBFavedMovie ON DBFavedMovie.id = DBMovie.id
     """
     )
-    fun getFavMovies(): List<DBMovie>
+    fun getFavMovies(): Flow<List<DBMovie>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMovieToFav(movie: DBFavedMovie)
@@ -52,6 +53,6 @@ interface MoviesDao {
     @Query("DELETE FROM DBFavedMovie WHERE DBFavedMovie.id = :movieId")
     fun removeMovieFromFav(movieId: Int)
 
-    @Query("SELECT COUNT(*) > 0 FROM DBFavedMovie WHERE id = :movieId")
+    @Query("SELECT id FROM DBFavedMovie WHERE id = :movieId")
     fun isMovieFaved(movieId: Int): Boolean
 }

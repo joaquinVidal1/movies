@@ -10,6 +10,8 @@ import com.example.movies.domain.model.MovieReviews
 import com.example.movies.domain.model.Page
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,10 +95,8 @@ class MoviesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFavedMovies(): List<Movie> {
-        return withContext(Dispatchers.IO) {
-            moviesDao.getFavMovies().map { it.toModel() }
-        }
+    override fun getFavedMovies(): Flow<List<Movie>> {
+        return moviesDao.getFavMovies().map { it.map { movie -> movie.toModel() } }
     }
 
     private fun findFirstGap(pageNumbers: List<Int>): Int {

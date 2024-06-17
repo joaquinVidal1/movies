@@ -2,13 +2,12 @@ package com.example.movies.domain.usecase
 
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.repository.MoviesRepository
-import com.example.movies.domain.usecase.base.CoroutineUseCase
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetFavMoviesUseCase @Inject constructor(private val moviesRepository: MoviesRepository) :
-    CoroutineUseCase<Unit, List<Movie>>() {
+class GetFavMoviesUseCase @Inject constructor(private val moviesRepository: MoviesRepository) {
 
-    override suspend fun execute(params: Unit): List<Movie> {
+    operator fun invoke(): Flow<List<Movie>> {
         return moviesRepository.getFavedMovies()
     }
 

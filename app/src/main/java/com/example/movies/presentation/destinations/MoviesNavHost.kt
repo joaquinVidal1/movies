@@ -10,6 +10,7 @@ import com.example.movies.presentation.fav.FavScreen
 import com.example.movies.presentation.home.HomeScreen
 import com.example.movies.presentation.movieDetails.MovieDetailsScreen
 import com.example.movies.presentation.movieReviews.MovieReviewsScreen
+import com.example.movies.presentation.search.SearchScreen
 
 @Composable
 fun MoviesNavHost(
@@ -25,16 +26,21 @@ fun MoviesNavHost(
             })
         }
 
-        composable(route = MovieDetailsDestination.routeWithArgs, arguments = MovieDetailsDestination.arguments) { _ ->
-            MovieDetailsScreen(onBackPressed = { navController.navigateUp() }, onShowReviewsPressed = { movie ->
-                navController.navigateToReviews(
-                    movieId = movie.id, moviePoster = movie.posterPath
-                )
-            })
+        composable(
+            route = MovieDetailsDestination.routeWithArgs,
+            arguments = MovieDetailsDestination.arguments
+        ) { _ ->
+            MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
+                onShowReviewsPressed = { movie ->
+                    navController.navigateToReviews(
+                        movieId = movie.id, moviePoster = movie.posterPath
+                    )
+                })
         }
 
         composable(
-            route = MovieReviewsDestination.routeWithArgs, arguments = MovieReviewsDestination.arguments
+            route = MovieReviewsDestination.routeWithArgs,
+            arguments = MovieReviewsDestination.arguments
         ) { navBackStackEntry ->
             MovieReviewsScreen(
                 onBackPressed = { navController.navigateUp() },
@@ -46,6 +52,10 @@ fun MoviesNavHost(
         composable(route = MovieReviewsDestination.FavsDestination.route) {
             FavScreen(onMoviePressed = { navController.navigateToMovieDetails(it.id) })
         }
+
+        composable(route = SearchDestination.route) {
+            SearchScreen()
+        }
     }
 }
 
@@ -56,4 +66,8 @@ private fun NavHostController.navigateToMovieDetails(movieId: Int) {
 private fun NavHostController.navigateToReviews(movieId: Int, moviePoster: String) {
     val encodedPosterPath = Uri.encode(moviePoster)
     this.navigate("${MovieReviewsDestination.route}/$movieId/$encodedPosterPath")
+}
+
+private fun NavHostController.navigateToSearch() {
+    this.navigate(SearchDestination.route)
 }

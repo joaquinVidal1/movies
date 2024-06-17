@@ -25,7 +25,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     MoviesApp()
                 }
             }
@@ -41,7 +44,7 @@ fun MoviesApp() {
 
         Scaffold(bottomBar = {
             MoviesNavigationBar(
-                items = listOf(Screen.Home, Screen.Favs),
+                items = listOf(Screen.Home, Screen.Favs, Screen.Search),
                 navController = navController
             )
         }) {

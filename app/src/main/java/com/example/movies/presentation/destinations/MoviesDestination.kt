@@ -32,3 +32,7 @@ object MovieReviewsDestination : MoviesDestination {
         override val route: String = "favs"
     }
 }
+
+object SearchDestination : MoviesDestination {
+    override val route: String = "search"
+}
