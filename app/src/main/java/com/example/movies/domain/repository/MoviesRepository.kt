@@ -26,4 +26,6 @@ interface MoviesRepository {
     suspend fun getMovieIsFaved(movieId: Int): Boolean
 
     fun getFavedMovies(): Flow<List<Movie>>
+
+    suspend fun searchMovies(query: String): List<Movie>
 }

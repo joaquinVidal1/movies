@@ -4,6 +4,8 @@ import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
+import com.example.movies.data.network.model.SearchBody
+import com.example.movies.data.network.model.SearchService
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
@@ -18,7 +20,9 @@ import javax.inject.Singleton
 
 @Singleton
 class MoviesRepositoryImpl @Inject constructor(
-    private val moviesDao: MoviesDao, private val moviesService: MoviesService
+    private val moviesDao: MoviesDao,
+    private val moviesService: MoviesService,
+    private val searchService: SearchService
 ) : MoviesRepository {
 
     override suspend fun getAllMovies(): List<Movie> {
@@ -107,6 +111,13 @@ class MoviesRepositoryImpl @Inject constructor(
             }
         }
         return (sortedNumbers.lastOrNull() ?: 0) + 1
+    }
+
+    override suspend fun searchMovies(query: String): List<Movie> {
+        return withContext(Dispatchers.IO) {
+            searchService.searchMovies(SearchBody(title = query, overview = null))
+                .map { it.toLocalModel() }
+        }
     }
 
 }

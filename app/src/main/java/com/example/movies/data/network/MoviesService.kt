@@ -5,6 +5,7 @@ import com.example.movies.data.network.model.ApiMovie
 import com.example.movies.data.network.model.ApiPaginatedResponse
 import com.example.movies.data.network.model.MovieFavoriteResponse
 import com.example.movies.data.network.model.MovieFavouriteRequestBody
+import com.example.movies.data.network.model.SearchBody
 import com.example.movies.domain.model.MovieReview
 import retrofit2.http.Body
 import retrofit2.http.GET

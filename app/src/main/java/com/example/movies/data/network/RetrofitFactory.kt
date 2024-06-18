@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitFactory {
+
     fun getBuilder(
     ): Retrofit {
         val client = OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
@@ -28,8 +29,24 @@ object RetrofitFactory {
 
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        return Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi)).baseUrl(BASE_URL)
-            .client(client.build()).build()
+        return Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BASE_URL).client(client.build()).build()
+    }
+
+    fun getSearchBuilder(
+    ): Retrofit {
+        val client = OkHttpClient.Builder()
+
+        if (BuildConfig.DEBUG) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+            client.addInterceptor(logging)
+        }
+
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+        return Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl("http://192.168.1.3:3001/").client(client.build()).build()
     }
 }
 

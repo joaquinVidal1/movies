@@ -1,6 +1,7 @@
 package com.example.movies.domain.model
 
 import com.example.movies.data.db.model.DBMovie
+import com.squareup.moshi.Json
 import java.time.LocalDate
 
 data class Movie(
