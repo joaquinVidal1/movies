@@ -21,6 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
+import com.example.movies.data.network.model.WatchProvider
 import com.example.movies.presentation.theme.MoviesTheme
 
 @Composable
@@ -31,6 +32,7 @@ fun MovieDetails(
     voteAverage: Float,
     posterPath: String,
     videoPreviewPath: String,
+    watchProviders: List<WatchProvider>,
     onBackPressed: () -> Unit,
     isFav: Boolean,
     onFavPressed: () -> Unit,
@@ -87,6 +89,7 @@ fun MovieDetails(
         MovieData(peopleWatching = peopleWatching,
             genres = genres,
             vote = voteAverage,
+            watchProviders = watchProviders,
             modifier = Modifier
                 .wrapContentHeight()
                 .constrainAs(movieData) {
@@ -109,6 +112,8 @@ fun MovieDetailsPreview() {
             videoPreviewPath = "",
             onBackPressed = {},
             isFav = false,
-            onFavPressed = {})
+            onFavPressed = {},
+            watchProviders = listOf()
+        )
     }
 }

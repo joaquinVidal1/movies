@@ -30,9 +30,10 @@ data class ApiDetailsMovie(
     @Json(name = "homepage") val homepage: String,
     @Json(name = "status") val status: String
 ) {
-    fun toModel(): DetailsMovie {
-        return DetailsMovie(
-            id = id,
+    fun toModel(
+        watchProviders: List<WatchProvider>
+    ): DetailsMovie {
+        return DetailsMovie(id = id,
             title = title,
             genres = genres.map { it.name },
             overview = overview,
@@ -40,6 +41,6 @@ data class ApiDetailsMovie(
             peopleWatching = popularity.toString().replace(".", "").toInt(),
             posterPath = MOVIE_IMAGE_BASE_URL_400 + posterPath,
             videoPreviewPath = MOVIE_IMAGE_BASE_URL_400 + backdropPath,
-        )
+            watchProviders = watchProviders.map { it.copy(logoPath = MOVIE_IMAGE_BASE_URL_400 + it.logoPath) })
     }
 }

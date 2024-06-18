@@ -1,6 +1,6 @@
 package com.example.movies.domain.model
 
-import com.example.movies.data.network.model.Genre
+import com.example.movies.data.network.model.WatchProvider
 
 class DetailsMovie(
     val id: Int,
@@ -11,4 +11,5 @@ class DetailsMovie(
     val overview: String,
     val posterPath: String,
     val videoPreviewPath: String,
+    val watchProviders: List<WatchProvider>
 )

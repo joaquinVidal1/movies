@@ -49,7 +49,10 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovieDetails(movieId: Int): DetailsMovie {
-        return moviesService.getMovieDetails(movieId).toModel()
+        val watchProviders = moviesService.getWatchProviders(movieId).results.let {
+            it["US"]?.rent ?: it["US"]?.buy ?: it["AR"]?.buy ?: listOf()
+        }
+        return moviesService.getMovieDetails(movieId).toModel(watchProviders)
     }
 
     override suspend fun deleteExpiredMovies() {
@@ -116,8 +119,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun searchMovies(queryTitle: String, queryOverview: String): List<Movie> {
         return withContext(Dispatchers.IO) {
             searchService.searchMovies(
-                SearchBody(
-                    title = queryTitle.takeIf { it.isNotEmpty() },
+                SearchBody(title = queryTitle.takeIf { it.isNotEmpty() },
                     overview = queryOverview.takeIf { it.isNotEmpty() })
             ).map { it.toLocalModel() }
         }
