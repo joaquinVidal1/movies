@@ -15,22 +15,28 @@ class SearchViewModel @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success(listOf(), ""))
+    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success(listOf(), "", ""))
     val uiState: StateFlow<SearchUiState> = _uiState
 
-    fun search(query: String) {
-        _uiState.value = SearchUiState.Loading(query)
+    fun search(queryTitle: String, queryOverview: String) {
+        _uiState.value = SearchUiState.Loading(queryTitle, queryOverview)
         viewModelScope.launch {
-            _uiState.value =
-                searchMoviesUseCase(SearchMoviesUseCase.Params(query)).let { moviesResult ->
-                    if (moviesResult is Result.Error) {
-                        moviesResult.message?.let {
-                            SearchUiState.Error(errorMessage = it, query)
-                        } ?: SearchUiState.Error(errorMessage = "null", query)
-                    } else {
-                        SearchUiState.Success(data = (moviesResult as Result.Success).value, query)
-                    }
+            _uiState.value = searchMoviesUseCase(
+                SearchMoviesUseCase.Params(
+                    queryTitle,
+                    queryOverview
+                )
+            ).let { moviesResult ->
+                if (moviesResult is Result.Error) {
+                    moviesResult.message?.let {
+                        SearchUiState.Error(errorMessage = it, queryTitle, queryOverview)
+                    } ?: SearchUiState.Error(errorMessage = "null", queryTitle, queryOverview)
+                } else {
+                    SearchUiState.Success(
+                        data = (moviesResult as Result.Success).value, queryTitle, queryOverview
+                    )
                 }
+            }
         }
     }
 }

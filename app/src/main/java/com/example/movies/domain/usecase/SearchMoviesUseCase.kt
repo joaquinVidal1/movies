@@ -9,8 +9,8 @@ class SearchMoviesUseCase @Inject constructor(private val moviesRepository: Movi
     CoroutineUseCase<SearchMoviesUseCase.Params, List<Movie>>() {
 
     override suspend fun execute(params: Params): List<Movie> {
-        return moviesRepository.searchMovies(params.query)
+        return moviesRepository.searchMovies(params.queryTitle, params.queryOverview)
     }
 
-    data class Params(val query: String)
+    data class Params(val queryTitle: String, val queryOverview: String)
 }

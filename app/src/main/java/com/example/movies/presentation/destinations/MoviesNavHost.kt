@@ -54,7 +54,7 @@ fun MoviesNavHost(
         }
 
         composable(route = SearchDestination.route) {
-            SearchScreen()
+            SearchScreen(onMoviePressed = { navController.navigateToMovieDetails(it.id) })
         }
     }
 }

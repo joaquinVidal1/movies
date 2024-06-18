@@ -113,10 +113,13 @@ class MoviesRepositoryImpl @Inject constructor(
         return (sortedNumbers.lastOrNull() ?: 0) + 1
     }
 
-    override suspend fun searchMovies(query: String): List<Movie> {
+    override suspend fun searchMovies(queryTitle: String, queryOverview: String): List<Movie> {
         return withContext(Dispatchers.IO) {
-            searchService.searchMovies(SearchBody(title = query, overview = null))
-                .map { it.toLocalModel() }
+            searchService.searchMovies(
+                SearchBody(
+                    title = queryTitle.takeIf { it.isNotEmpty() },
+                    overview = queryOverview.takeIf { it.isNotEmpty() })
+            ).map { it.toLocalModel() }
         }
     }
 
