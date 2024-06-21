@@ -1,6 +1,9 @@
 package com.example.movies.presentation.home
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,8 +50,13 @@ import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 import com.example.movies.presentation.home.components.MovieCover
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
+fun SharedTransitionScope.HomeScreen(
+    onMoviePressed: (Movie) -> Unit,
+    buffer: Int = 4,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
     val listState = rememberLazyGridState()
@@ -84,9 +92,13 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
             )
 
             IconButton(
-                onClick = { viewModel.onEmptyPressed() }, modifier = Modifier.padding(top = 24.dp, end = 16.dp)
+                onClick = { viewModel.onEmptyPressed() },
+                modifier = Modifier.padding(top = 24.dp, end = 16.dp)
             ) {
-                Icon(Icons.Sharp.Delete, contentDescription = stringResource(id = R.string.empty_db))
+                Icon(
+                    Icons.Sharp.Delete,
+                    contentDescription = stringResource(id = R.string.empty_db)
+                )
             }
         }
 
@@ -103,6 +115,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit, buffer: Int = 4) {
 
                 items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
                     MovieCover(movie = movie,
+                        animatedVisibilityScope = animatedVisibilityScope,
                         modifier = Modifier
                             .size(250.dp)
                             .clickable { onMoviePressed(movie) }

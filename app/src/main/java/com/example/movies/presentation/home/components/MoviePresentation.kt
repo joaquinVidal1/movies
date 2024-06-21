@@ -1,5 +1,9 @@
 package com.example.movies.presentation.home.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,10 +35,22 @@ import com.example.movies.presentation.common.components.VoteDecimalText
 import java.time.LocalDate
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
+fun SharedTransitionScope.MovieCover(
+    movie: Movie,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart
+        modifier = modifier.sharedElement(
+            state = rememberSharedContentState(key = "image/${movie.title}"),
+            animatedVisibilityScope = animatedVisibilityScope,
+            boundsTransform = { _, _ ->
+                tween(durationMillis = 1000)
+            }
+        ),
+        contentAlignment = Alignment.BottomStart
     ) {
         Image(
             painter = rememberAsyncImagePainter(
@@ -59,7 +75,10 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = movie.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White
+                text = movie.title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
 
@@ -84,19 +103,19 @@ fun MovieCover(movie: Movie, modifier: Modifier = Modifier) {
 @Composable
 @Preview(showBackground = true)
 fun MoviePresentationPreview() {
-    val movie = Movie(
-        id = 61565,
-        title = "Meg 2: The Trench Meg 2: The Trench Meg 2: The Trench Meg 2: The Trench",
-        overview = "An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.",
-        releaseDate = LocalDate.parse("2023-08-02"),
-        voteAverage = 6.9,
-        poster = "/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg",
-    )
-    Surface(color = MaterialTheme.colorScheme.surface) {
-        MovieCover(
-            movie = movie, modifier = Modifier
-                .fillMaxSize()
-                .shadow(8.dp)
-        )
-    }
+//    val movie = Movie(
+//        id = 61565,
+//        title = "Meg 2: The Trench Meg 2: The Trench Meg 2: The Trench Meg 2: The Trench",
+//        overview = "An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.",
+//        releaseDate = LocalDate.parse("2023-08-02"),
+//        voteAverage = 6.9,
+//        poster = "/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg",
+//    )
+//    Surface(color = MaterialTheme.colorScheme.surface) {
+//        MovieCover(
+//            movie = movie, modifier = Modifier
+//                .fillMaxSize()
+//                .shadow(8.dp)
+//        )
+//    }
 }

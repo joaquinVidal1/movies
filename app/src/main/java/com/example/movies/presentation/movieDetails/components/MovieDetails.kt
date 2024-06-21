@@ -1,5 +1,9 @@
 package com.example.movies.presentation.movieDetails.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +27,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.presentation.theme.MoviesTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieDetails(
+fun SharedTransitionScope.MovieDetails(
     title: String,
     peopleWatching: Int,
     genres: List<String>,
@@ -32,7 +37,8 @@ fun MovieDetails(
     posterPath: String,
     videoPreviewPath: String,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     ConstraintLayout(
         modifier = modifier,
@@ -45,12 +51,10 @@ fun MovieDetails(
 
         MovieVideoPreview(onBackPressed = onBackPressed,
             moviePoster = videoPreviewPath,
-            modifier = Modifier
-                .constrainAs(videoPreview) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                }
-        )
+            modifier = Modifier.constrainAs(videoPreview) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+            })
 
         Image(
             painter = rememberAsyncImagePainter(
@@ -62,7 +66,14 @@ fun MovieDetails(
                 .constrainAs(moviePoster) {
                     start.linkTo(parent.start, margin = 24.dp)
                     top.linkTo(videoPreview.bottom, margin = (-70).dp)
-                },
+                }
+                .sharedElement(
+                    state = rememberSharedContentState(key = "image/$title"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        tween(durationMillis = 1000)
+                    }
+                ),
             contentDescription = stringResource(R.string.movie_poster),
             contentScale = ContentScale.FillHeight,
         )
@@ -93,16 +104,22 @@ fun MovieDetails(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 fun MovieDetailsPreview() {
-    MoviesTheme {
-        MovieDetails(title = "Justice League",
-            peopleWatching = 3292,
-            genres = listOf("Action", "Adventure", "Fantast"),
-            voteAverage = 9.8f,
-            posterPath = "",
-            videoPreviewPath = "",
-            onBackPressed = {})
-    }
+//        MoviesTheme {
+//            SharedTransitionScope {
+//            MovieDetails(
+//                title = "Justice League",
+//                peopleWatching = 3292,
+//                genres = listOf("Action", "Adventure", "Fantast"),
+//                voteAverage = 9.8f,
+//                posterPath = "",
+//                videoPreviewPath = "",
+//                onBackPressed = {},
+//                animatedVisibilityScope = this
+//            )
+//        }
+//    }
 }

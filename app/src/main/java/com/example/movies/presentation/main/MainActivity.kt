@@ -4,6 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,7 +33,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     MoviesApp()
                 }
             }
@@ -38,36 +44,48 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MoviesApp() {
     MoviesTheme {
-        val navController = rememberNavController()
-        NavHost(
-            navController = navController, startDestination = HomeDestination.route
-        ) {
+        SharedTransitionLayout {
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController, startDestination = HomeDestination.route
+            ) {
 
-            composable(route = HomeDestination.route) {
-                HomeScreen(onMoviePressed = {
-                    navController.navigateToMovieDetails(it.id)
-                })
-            }
+                composable(route = HomeDestination.route) {
+                    HomeScreen(onMoviePressed = {
+                        navController.navigateToMovieDetails(it.id)
+                    }, animatedVisibilityScope = this)
+                }
 
-            composable(route = MovieDetailsDestination.routeWithArgs, arguments = MovieDetailsDestination.arguments) { _ ->
-                MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
-                    onShowReviewsPressed = { movie ->
-                        navController.navigateToReviews(
-                            movieId = movie.id,
-                            moviePoster = movie.posterPath
-                        )
-                    })
-            }
+                composable(
+                    route = MovieDetailsDestination.routeWithArgs,
+                    arguments = MovieDetailsDestination.arguments
+                ) { _ ->
+                    MovieDetailsScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        onShowReviewsPressed = { movie ->
+                            navController.navigateToReviews(
+                                movieId = movie.id,
+                                moviePoster = movie.posterPath
+                            )
+                        },
+                        animatedVisibilityScope = this
+                    )
+                }
 
-            composable(route = MovieReviewsDestination.routeWithArgs, arguments = MovieReviewsDestination.arguments) { navBackStackEntry ->
-                MovieReviewsScreen(
-                    onBackPressed = { navController.navigateUp() },
-                    posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
-                        ?: throw Exception("No value passed for movie poster")
-                )
+                composable(
+                    route = MovieReviewsDestination.routeWithArgs,
+                    arguments = MovieReviewsDestination.arguments
+                ) { navBackStackEntry ->
+                    MovieReviewsScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
+                            ?: throw Exception("No value passed for movie poster")
+                    )
+                }
             }
         }
     }

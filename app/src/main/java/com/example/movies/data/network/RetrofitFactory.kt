@@ -35,4 +35,4 @@ object RetrofitFactory {
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
 const val API_TOKEN =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MzJjZjJkODNhNjdhZjY1MDZjMjBjMzIxNGViZjgyNyIsInN1YiI6IjY0ZWY4NjQ0Y2FhNTA4MDEyYjA1Y2E1NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Yx3Rz_WnobciXDr0i8YE5YEqR5Nrlggf8yf2Npapqzg"
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YTFhOTI5MDNjYThiOGIzNDBhY2EyNmQ2YTU5M2VkNiIsInN1YiI6IjY2NjBjZGM0OGE1N2FhMjUyZDYwNmE1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.h3LWT16JOu6mWdAr8q4RcHZjVnx_iw3oLBkg4wN1o4E"
