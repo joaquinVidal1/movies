@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,16 +20,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.home.components.MovieCover
+import com.example.movies.presentation.search.components.Center
 import com.example.movies.presentation.search.components.SearchBar
 
 @Composable
@@ -69,9 +74,14 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
             when (it) {
                 is SearchUiState.Success -> {
                     if (it.data.isEmpty()) {
-                        Text(
-                            text = "Busque peliculas", style = TextStyle.Default
-                        )
+                        Center { modifier ->
+                            Text(
+                                text = "Busque peliculas",
+                                style = TextStyle.Default,
+                                fontSize = 24.sp,
+                                modifier = modifier
+                            )
+                        }
                     } else {
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(minSize = 150.dp),
@@ -98,23 +108,26 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
                 }
 
                 is SearchUiState.Error -> {
-                    Column {
+                    Center { modifier ->
                         Text(
                             text = it.errorMessage,
-                            modifier = Modifier.weight(0.5F),
+                            modifier = modifier,
                             style = TextStyle.Default
                         )
+
                     }
                 }
 
                 is SearchUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = colorResource(id = R.color.orange),
-                        modifier = Modifier
-                            .padding(bottom = 32.dp)
-                            .size(54.dp),
-                        strokeWidth = 6.dp
-                    )
+                    Center { modifier ->
+                        CircularProgressIndicator(
+                            color = colorResource(id = R.color.orange),
+                            modifier = modifier
+                                .padding(bottom = 32.dp)
+                                .size(54.dp),
+                            strokeWidth = 6.dp
+                        )
+                    }
                 }
             }
         }
