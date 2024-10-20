@@ -24,7 +24,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val getIsMovieFavedUseCase: GetIsMovieFavedUseCase
 ) : ViewModel() {
 
-    private val movieId: Int = savedStateHandle[MovieDetailsDestination.movieIdArg]
+    val movieId: Int = savedStateHandle[MovieDetailsDestination.movieIdArg]
         ?: throw IllegalStateException("No value passed for movieId")
 
     private val _uiState: MutableLiveData<MovieDetailsUiState> = MutableLiveData(MovieDetailsUiState.Loading)

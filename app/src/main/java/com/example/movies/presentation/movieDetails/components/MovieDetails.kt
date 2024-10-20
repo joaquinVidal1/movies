@@ -1,5 +1,9 @@
 package com.example.movies.presentation.movieDetails.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,21 +26,25 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.data.network.model.WatchProvider
+import com.example.movies.presentation.common.components.shimmerBrush
 import com.example.movies.presentation.theme.MoviesTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieDetails(
-    title: String,
-    peopleWatching: Int,
-    genres: List<String>,
-    voteAverage: Float,
-    posterPath: String,
-    videoPreviewPath: String,
-    watchProviders: List<WatchProvider>,
+fun SharedTransitionScope.MovieDetails(
+    title: String?,
+    peopleWatching: Int?,
+    genres: List<String>?,
+    voteAverage: Float?,
+    posterPath: String?,
+    videoPreviewPath: String?,
+    watchProviders: List<WatchProvider>?,
     onBackPressed: () -> Unit,
     isFav: Boolean,
     onFavPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier,
+    transitionKey: String,
 ) {
     ConstraintLayout(
         modifier = modifier,
@@ -47,7 +55,8 @@ fun MovieDetails(
         val movieData = createRef()
         val movieTitle = createRef()
 
-        MovieVideoPreview(onBackPressed = onBackPressed,
+        MovieVideoPreview(
+            onBackPressed = onBackPressed,
             moviePoster = videoPreviewPath,
             modifier = Modifier
                 .constrainAs(videoPreview) {
@@ -60,7 +69,7 @@ fun MovieDetails(
 
         Image(
             painter = rememberAsyncImagePainter(
-                posterPath, placeholder = painterResource(id = R.drawable.movieplaceholder)
+                posterPath,
             ),
             modifier = Modifier
                 .shadow(8.dp)
@@ -68,12 +77,20 @@ fun MovieDetails(
                 .constrainAs(moviePoster) {
                     start.linkTo(parent.start, margin = 24.dp)
                     top.linkTo(videoPreview.bottom, margin = (-70).dp)
-                },
+                }
+                .background(shimmerBrush(showShimmer = posterPath == null))
+                .sharedElement(
+                    state = rememberSharedContentState(key = transitionKey),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        tween(durationMillis = 1000)
+                    }
+                ),
             contentDescription = stringResource(R.string.movie_poster),
             contentScale = ContentScale.FillHeight,
         )
 
-        Text(text = title,
+        Text(text = title ?: "",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             overflow = TextOverflow.Ellipsis,
@@ -84,7 +101,9 @@ fun MovieDetails(
                     start.linkTo(moviePoster.end, margin = 16.dp)
                     end.linkTo(parent.end, margin = 8.dp)
                     width = Dimension.fillToConstraints
-                })
+                }
+                .background(shimmerBrush(showShimmer = title == null))
+        )
 
         MovieData(peopleWatching = peopleWatching,
             genres = genres,
@@ -100,20 +119,21 @@ fun MovieDetails(
     }
 }
 
-@Preview
-@Composable
-fun MovieDetailsPreview() {
-    MoviesTheme {
-        MovieDetails(title = "Justice League",
-            peopleWatching = 3292,
-            genres = listOf("Action", "Adventure", "Fantast"),
-            voteAverage = 9.8f,
-            posterPath = "",
-            videoPreviewPath = "",
-            onBackPressed = {},
-            isFav = false,
-            onFavPressed = {},
-            watchProviders = listOf()
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MovieDetailsPreview() {
+//    MoviesTheme {
+//        MovieDetails(
+//            title = "Justice League",
+//            peopleWatching = 3292,
+//            genres = listOf("Action", "Adventure", "Fantast"),
+//            voteAverage = 9.8f,
+//            posterPath = "",
+//            videoPreviewPath = "",
+//            onBackPressed = {},
+//            isFav = false,
+//            onFavPressed = {},
+//            watchProviders = listOf()
+//        )
+//    }
+//}

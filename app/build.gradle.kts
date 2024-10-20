@@ -116,4 +116,6 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.3.0-beta03")
+
+    implementation("androidx.compose.animation:animation:1.7.0-alpha07")
 }

@@ -1,6 +1,7 @@
 package com.example.movies.presentation.movieDetails.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,20 +28,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.data.network.model.WatchProvider
 import com.example.movies.domain.utils.addDotsToLongNumber
 import com.example.movies.presentation.common.components.VoteDecimalText
+import com.example.movies.presentation.common.components.shimmerBrush
 import com.example.movies.presentation.movieDetails.MAX_VOTE
 import com.example.movies.presentation.theme.MoviesTheme
 
 @Composable
 fun MovieData(
-    peopleWatching: Int,
-    genres: List<String>,
-    vote: Float,
-    watchProviders: List<WatchProvider>,
+    peopleWatching: Int?,
+    genres: List<String>?,
+    vote: Float?,
+    watchProviders: List<WatchProvider>?,
     modifier: Modifier = Modifier
 ) {
     val peopleWatchingText = buildAnnotatedString {
@@ -61,28 +64,65 @@ fun MovieData(
 
     Column(modifier = modifier) {
 
-        Text(text = peopleWatchingText)
+        Text(
+            text = peopleWatchingText,
+            modifier = Modifier.background(shimmerBrush(showShimmer = peopleWatching == null))
+        )
 
         Spacer(modifier = Modifier.size(4.dp))
 
         Text(
-            text = genres.joinToString(separator = ", "),
-            style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+            text = genres?.joinToString(separator = ", ") ?: "",
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray),
+            modifier = Modifier.background(shimmerBrush(showShimmer = peopleWatching == null))
         )
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        LazyRow(modifier = Modifier
-            .wrapContentHeight()
-            .wrapContentWidth()) {
-            items(watchProviders) {
-                Image(
-                    painter = rememberAsyncImagePainter(it.logoPath),
+        if (watchProviders == null) {
+            Row {
+                AsyncImage(
+                    model = null,
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
                         .padding(horizontal = 4.dp)
+                        .background(shimmerBrush())
                 )
+
+                AsyncImage(
+                    model = null,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(horizontal = 4.dp)
+                        .background(shimmerBrush())
+                )
+
+                AsyncImage(
+                    model = null,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(horizontal = 4.dp)
+                        .background(shimmerBrush())
+                )
+            }
+        } else {
+            LazyRow(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .wrapContentWidth()
+            ) {
+                items(watchProviders) {
+                    Image(
+                        painter = rememberAsyncImagePainter(it.logoPath),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(horizontal = 4.dp)
+                    )
+                }
             }
         }
 
@@ -90,24 +130,35 @@ fun MovieData(
 
         Row {
             VoteDecimalText(
-                text = vote.toString(),
+                text = vote?.toString(),
                 textStyle = MaterialTheme.typography.bodyLarge.toSpanStyle().copy(
                     color = colorResource(
                         id = R.color.orange
                     )
-                )
+                ),
+                Modifier.background(shimmerBrush(vote == null))
             )
 
-            for (i in 2 until vote.toInt() step 2) {
-                Icon(
-                    Icons.Default.Star,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.orange)
-                )
-            }
+            if (vote != null) {
+                for (i in 2 until vote.toInt() step 2) {
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.orange)
+                    )
+                }
 
-            for (i in vote.toInt() until MAX_VOTE step 2) {
-                Icon(Icons.Default.Star, contentDescription = null, tint = Color.Gray)
+                for (i in vote.toInt() until MAX_VOTE step 2) {
+                    Icon(Icons.Default.Star, contentDescription = null, tint = Color.Gray)
+                }
+            } else {
+                for (i in 1 until 3) {
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = null,
+                        modifier = Modifier.background(shimmerBrush())
+                    )
+                }
             }
         }
     }

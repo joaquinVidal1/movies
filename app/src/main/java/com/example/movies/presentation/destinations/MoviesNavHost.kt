@@ -1,6 +1,8 @@
 package com.example.movies.presentation.destinations
 
 import android.net.Uri
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -12,49 +14,62 @@ import com.example.movies.presentation.movieDetails.MovieDetailsScreen
 import com.example.movies.presentation.movieReviews.MovieReviewsScreen
 import com.example.movies.presentation.search.SearchScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MoviesNavHost(
     navController: NavHostController, modifier: Modifier = Modifier
 ) {
-    NavHost(
-        navController = navController, startDestination = HomeDestination.route, modifier = modifier
-    ) {
 
-        composable(route = HomeDestination.route) {
-            HomeScreen(onMoviePressed = {
-                navController.navigateToMovieDetails(it.id)
-            })
-        }
+    SharedTransitionLayout {
+        NavHost(
+            navController = navController,
+            startDestination = HomeDestination.route,
+            modifier = modifier
+        ) {
 
-        composable(
-            route = MovieDetailsDestination.routeWithArgs,
-            arguments = MovieDetailsDestination.arguments
-        ) { _ ->
-            MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
-                onShowReviewsPressed = { movie ->
-                    navController.navigateToReviews(
-                        movieId = movie.id, moviePoster = movie.posterPath
-                    )
-                })
-        }
+            composable(route = HomeDestination.route) {
+                HomeScreen(
+                    animatedVisibilityScope = this,
+                    onMoviePressed = {
+                        navController.navigateToMovieDetails(it.id)
+                    })
+            }
 
-        composable(
-            route = MovieReviewsDestination.routeWithArgs,
-            arguments = MovieReviewsDestination.arguments
-        ) { navBackStackEntry ->
-            MovieReviewsScreen(
-                onBackPressed = { navController.navigateUp() },
-                posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
-                    ?: throw Exception("No value passed for movie poster")
-            )
-        }
+            composable(
+                route = MovieDetailsDestination.routeWithArgs,
+                arguments = MovieDetailsDestination.arguments
+            ) { _ ->
+                MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
+                    animatedVisibilityScope = this,
+                    onShowReviewsPressed = { movie ->
+                        navController.navigateToReviews(
+                            movieId = movie.id, moviePoster = movie.posterPath
+                        )
+                    })
+            }
 
-        composable(route = MovieReviewsDestination.FavsDestination.route) {
-            FavScreen(onMoviePressed = { navController.navigateToMovieDetails(it.id) })
-        }
+            composable(
+                route = MovieReviewsDestination.routeWithArgs,
+                arguments = MovieReviewsDestination.arguments
+            ) { navBackStackEntry ->
+                MovieReviewsScreen(
+                    onBackPressed = { navController.navigateUp() },
+                    posterPath = navBackStackEntry.arguments?.getString(MovieReviewsDestination.moviePosterPathArg)
+                        ?: throw Exception("No value passed for movie poster")
+                )
+            }
 
-        composable(route = SearchDestination.route) {
-            SearchScreen(onMoviePressed = { navController.navigateToMovieDetails(it.id) })
+            composable(route = MovieReviewsDestination.FavsDestination.route) {
+                FavScreen(
+                    animatedVisibilityScope = this,
+                    onMoviePressed = { navController.navigateToMovieDetails(it.id) })
+            }
+
+            composable(route = SearchDestination.route) {
+                SearchScreen(
+                    animatedVisibilityScope = this,
+                    onMoviePressed = { navController.navigateToMovieDetails(it.id) })
+            }
         }
     }
 }

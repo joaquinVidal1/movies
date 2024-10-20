@@ -1,7 +1,10 @@
 package com.example.movies.presentation.movieDetails
 
-import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +29,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.DetailsMovie
+import com.example.movies.presentation.common.components.shimmerBrush
 import com.example.movies.presentation.movieDetails.components.GradientFloatingActionButton
 import com.example.movies.presentation.movieDetails.components.MovieDetails
+import com.example.movies.presentation.search.components.Center
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (DetailsMovie) -> Unit) {
+fun SharedTransitionScope.MovieDetailsScreen(
+    onBackPressed: () -> Unit, onShowReviewsPressed: (DetailsMovie) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
 
     val viewModel: MovieDetailsViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -39,12 +48,28 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
 
     uiState?.let { state ->
         when (state) {
-            is MovieDetailsUiState.Success -> {
-                Content(movie = state.movie,
+           is MovieDetailsUiState.Success,is MovieDetailsUiState.Loading -> {
+                if (state is MovieDetailsUiState.Loading) {
+                    Center {
+                        Box {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Center),
+                                color = colorResource(id = R.color.orange)
+                            )
+                        }
+                    }
+                }
+
+                Content(
+                    movie = state.movie,
                     onBackPressed = onBackPressed,
                     isFav = isFav,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onShowReviewsPressed = onShowReviewsPressed,
-                    onFavPressed = { viewModel.onFavoriteButtonPressed() })
+                    onFavPressed = { viewModel.onFavoriteButtonPressed() },
+                    movieId = viewModel.movieId,
+                    launchedFrom =
+                )
             }
 
             is MovieDetailsUiState.Error -> {
@@ -52,69 +77,78 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
                 onBackPressed()
             }
 
-            MovieDetailsUiState.Loading -> {
-                Box {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Center), color = colorResource(id = R.color.orange)
-                    )
-                }
-            }
+//            MovieDetailsUiState.Loading -> {
+//                Box {
+//                    CircularProgressIndicator(
+//                        modifier = Modifier.align(Center),
+//                        color = colorResource(id = R.color.orange)
+//                    )
+//                }
+//            }
         }
     }
 
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun Content(
-    movie: DetailsMovie,
+fun SharedTransitionScope.Content(
+    movie: DetailsMovie?,
     isFav: Boolean,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onBackPressed: () -> Unit,
     onShowReviewsPressed: (DetailsMovie) -> Unit,
-    onFavPressed: () -> Unit
+    onFavPressed: () -> Unit,
+    launchedFrom: String,
+    movieId: Int
 ) {
 
     Column(verticalArrangement = Arrangement.SpaceBetween) {
-    Log.d("juako", "watch providers: ${movie.watchProviders}")
         MovieDetails(
-            title = movie.title,
-            peopleWatching = movie.peopleWatching,
-            genres = movie.genres,
-            voteAverage = movie.voteAverage,
-            posterPath = movie.posterPath,
-            videoPreviewPath = movie.videoPreviewPath,
+            title = movie?.title,
+            peopleWatching = movie?.peopleWatching,
+            genres = movie?.genres,
+            voteAverage = movie?.voteAverage,
+            posterPath = movie?.posterPath,
+            videoPreviewPath = movie?.videoPreviewPath,
             onBackPressed = onBackPressed,
             isFav = isFav,
             onFavPressed = onFavPressed,
-            watchProviders = movie.watchProviders,
-            modifier = Modifier
+            watchProviders = movie?.watchProviders,
+            modifier = Modifier,
+            animatedVisibilityScope = animatedVisibilityScope,
+            transitionKey = "$launchedFrom/${movieId}"
         )
 
         Text(
-            text = movie.overview,
+            text = movie?.overview ?: "",
             style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .background(shimmerBrush(movie == null)),
         )
 
         Spacer(modifier = Modifier.size(16.dp))
         Spacer(modifier = Modifier.size(16.dp))
 
-        GradientFloatingActionButton(
-            gradientColors = listOf(colorResource(id = R.color.orange), Color.Magenta),
-            onClick = { onShowReviewsPressed(movie) },
-            elevation = 8.dp,
-            modifier = Modifier
-                .padding(bottom = 40.dp)
-                .align(CenterHorizontally)
-        ) {
-            Text(
-                text = stringResource(id = R.string.show_reviews),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = Color.White, fontWeight = FontWeight.Bold
-                ),
-            )
+        if (movie != null) {
+            GradientFloatingActionButton(
+                gradientColors = listOf(colorResource(id = R.color.orange), Color.Magenta),
+                onClick = { onShowReviewsPressed(movie) },
+                elevation = 8.dp,
+                modifier = Modifier
+                    .padding(bottom = 40.dp)
+                    .align(CenterHorizontally)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.show_reviews),
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White, fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
         }
-
     }
 
 }

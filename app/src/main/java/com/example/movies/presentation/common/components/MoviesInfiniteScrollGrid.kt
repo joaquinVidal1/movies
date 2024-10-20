@@ -1,5 +1,8 @@
 package com.example.movies.presentation.common.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,31 +25,37 @@ import androidx.compose.ui.unit.dp
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.home.components.MovieCover
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MoviesInfiniteScrollGrid(
+fun SharedTransitionScope.MoviesInfiniteScrollGrid(
     modifier: Modifier = Modifier,
     buffer: Int = 4,
     onMoviePressed: (Movie) -> Unit,
-    loadMoreMovies: suspend () -> Unit,
-    movies: List<Movie>
+    loadMoreMovies: (suspend () -> Unit)?,
+    movies: List<Movie>,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    transitionKey: String
 ) {
     val listState = rememberLazyGridState()
 
-    val loadMore by remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItems = layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
-            val value = (lastVisibleItemIndex > (totalItems - buffer)) && (totalItems > 1)
-            value
-        }
-    }
+    if (loadMoreMovies != null) {
 
-    LaunchedEffect(key1 = loadMore, block = {
-        if (loadMore) {
-            loadMoreMovies()
+        val loadMore by remember {
+            derivedStateOf {
+                val layoutInfo = listState.layoutInfo
+                val totalItems = layoutInfo.totalItemsCount
+                val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0)
+                val value = (lastVisibleItemIndex > (totalItems - buffer)) && (totalItems > 1)
+                value
+            }
         }
-    })
+
+        LaunchedEffect(key1 = loadMore, block = {
+            if (loadMore) {
+                loadMoreMovies()
+            }
+        })
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
@@ -59,6 +68,8 @@ fun MoviesInfiniteScrollGrid(
 
         items(items = movies, key = { movie -> movie.id }) { movie ->
             MovieCover(movie = movie,
+                transitionKey = transitionKey,
+                animatedVisibilityScope = animatedVisibilityScope,
                 modifier = Modifier
                     .size(250.dp)
                     .clickable { onMoviePressed(movie) }

@@ -15,29 +15,41 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 @Composable
-fun VoteDecimalText(text: String, textStyle: SpanStyle, modifier: Modifier = Modifier) {
-    val voteValue = text.toFloat().times(10).roundToInt().div(10f)
-    val parts = voteValue.toString().split(".")
-    val integerPart = parts[0]
-    val fractionalPart = parts[1]
+fun VoteDecimalText(text: String?, textStyle: SpanStyle, modifier: Modifier = Modifier) {
+    text?.let {
+        val voteValue = text.toFloat().times(10).roundToInt().div(10f)
+        val parts = voteValue.toString().split(".")
+        val integerPart = parts[0]
+        val fractionalPart = parts[1]
 
-    val text = buildAnnotatedString {
-        withStyle(style = textStyle.copy(fontWeight = FontWeight.Bold)) {
-            append(integerPart)
+        val text = buildAnnotatedString {
+            withStyle(style = textStyle.copy(fontWeight = FontWeight.Bold)) {
+                append(integerPart)
+            }
+            withStyle(
+                style = textStyle.copy(
+                    fontWeight = FontWeight.Light,
+                    baselineShift = BaselineShift.Superscript,
+                    fontSize = 12.sp
+                )
+            ) {
+                append(".$fractionalPart")
+            }
         }
-        withStyle(
-            style = textStyle.copy(
-                fontWeight = FontWeight.Light, baselineShift = BaselineShift.Superscript, fontSize = 12.sp
-            )
+        Box(
+            modifier = modifier, contentAlignment = Alignment.Center
         ) {
-            append(".$fractionalPart")
+            Text(
+                text = text, textAlign = TextAlign.End
+            )
         }
-    }
-    Box(
-        modifier = modifier, contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text, textAlign = TextAlign.End
-        )
+    } ?: run {
+        Box(
+            modifier = modifier, contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "", textAlign = TextAlign.End
+            )
+        }
     }
 }

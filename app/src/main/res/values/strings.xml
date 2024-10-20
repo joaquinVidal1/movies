@@ -18,4 +18,5 @@
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_favs">Favs</string>
     <string name="search">Search</string>
+    <string name="favs_empty">No hay peliculas favoritas</string>
 </resources>

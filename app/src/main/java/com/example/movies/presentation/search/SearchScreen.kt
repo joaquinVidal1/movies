@@ -1,5 +1,8 @@
 package com.example.movies.presentation.search
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,12 +35,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.common.components.MoviesInfiniteScrollGrid
 import com.example.movies.presentation.home.components.MovieCover
 import com.example.movies.presentation.search.components.Center
 import com.example.movies.presentation.search.components.SearchBar
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
+fun SharedTransitionScope.SearchScreen(
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onMoviePressed: (Movie) -> Unit
+) {
 
     val viewModel: SearchViewModel = hiltViewModel()
     val uiState: SearchUiState by viewModel.uiState.collectAsState()
@@ -83,27 +91,34 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
                             )
                         }
                     } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(minSize = 150.dp),
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(
-                                top = 32.dp, start = 16.dp, end = 16.dp, bottom = 24.dp
-                            ),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-
-                            items(items = it.data, key = { movie -> movie.id }) { movie ->
-                                MovieCover(
-                                    movie = movie,
-                                    modifier = Modifier
-                                        .size(250.dp)
-                                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .clickable { onMoviePressed(movie) }
-                                )
-                            }
-                        }
+//                        LazyVerticalGrid(
+//                            columns = GridCells.Adaptive(minSize = 150.dp),
+//                            modifier = Modifier.fillMaxSize(),
+//                            contentPadding = PaddingValues(
+//                                top = 32.dp, start = 16.dp, end = 16.dp, bottom = 24.dp
+//                            ),
+//                            verticalArrangement = Arrangement.spacedBy(16.dp),
+//                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+//                        ) {
+//
+//                            items(items = it.data, key = { movie -> movie.id }) { movie ->
+//                                MovieCover(
+//                                    movie = movie,
+//                                    modifier = Modifier
+//                                        .size(250.dp)
+//                                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
+//                                        .clip(RoundedCornerShape(8.dp))
+//                                        .clickable { onMoviePressed(movie) }
+//                                )
+//                            }
+//                        }
+                        MoviesInfiniteScrollGrid(
+                            onMoviePressed = onMoviePressed,
+                            loadMoreMovies = null,
+                            movies = it.data,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            transitionKey = "Search"
+                        )
                     }
                 }
 

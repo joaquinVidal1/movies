@@ -1,6 +1,9 @@
 package com.example.movies.presentation.home
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,8 +38,12 @@ import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.common.components.MoviesInfiniteScrollGrid
 import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
+fun SharedTransitionScope.HomeScreen(
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onMoviePressed: (Movie) -> Unit
+) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
@@ -74,7 +81,9 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
                 onMoviePressed = onMoviePressed,
                 loadMoreMovies = { viewModel.getMoreMovies() },
                 movies = uiState.data,
-                buffer = 4
+                buffer = 4,
+                animatedVisibilityScope = animatedVisibilityScope,
+                transitionKey = "Home"
             )
 
             when (uiState) {

@@ -1,10 +1,12 @@
 package com.example.movies.presentation.movieDetails.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -26,26 +28,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
+import com.example.movies.presentation.common.components.shimmerBrush
 import com.example.movies.presentation.theme.MoviesTheme
 
 @Composable
 fun MovieVideoPreview(
     onBackPressed: () -> Unit,
-    moviePoster: String,
+    moviePoster: String?,
     modifier: Modifier = Modifier,
     isFav: Boolean,
     onFavPressed: () -> Unit
 ) {
     Box(modifier = modifier) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                moviePoster, placeholder = painterResource(id = R.drawable.movieplaceholder)
-            ),
+        AsyncImage(
+            model = moviePoster,
             contentDescription = stringResource(R.string.movie_poster),
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .background(shimmerBrush(showShimmer = moviePoster == null)),
+            contentScale = ContentScale.Crop,
         )
 
         Row(
