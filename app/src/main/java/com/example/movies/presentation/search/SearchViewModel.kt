@@ -18,22 +18,19 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success(listOf(), "", ""))
     val uiState: StateFlow<SearchUiState> = _uiState
 
-    fun search(queryTitle: String, queryOverview: String) {
-        _uiState.value = SearchUiState.Loading(queryTitle, queryOverview)
+    fun search(queryTitle: String) {
+        _uiState.value = SearchUiState.Loading(queryTitle)
         viewModelScope.launch {
             _uiState.value = searchMoviesUseCase(
-                SearchMoviesUseCase.Params(
-                    queryTitle,
-                    queryOverview
-                )
+                SearchMoviesUseCase.Params(queryTitle)
             ).let { moviesResult ->
                 if (moviesResult is Result.Error) {
                     moviesResult.message?.let {
-                        SearchUiState.Error(errorMessage = it, queryTitle, queryOverview)
-                    } ?: SearchUiState.Error(errorMessage = "null", queryTitle, queryOverview)
+                        SearchUiState.Error(errorMessage = it, queryTitle)
+                    } ?: SearchUiState.Error(errorMessage = "null", queryTitle)
                 } else {
                     SearchUiState.Success(
-                        data = (moviesResult as Result.Success).value, queryTitle, queryOverview
+                        data = (moviesResult as Result.Success).value, queryTitle
                     )
                 }
             }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,13 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,25 +44,8 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
         Column {
             SearchBar(
                 query = it.queryTitle,
-                onQueryChange = { newQuery ->
-                    viewModel.search(
-                        queryTitle = newQuery, queryOverview = uiState.queryOverview
-                    )
-                },
-                hint = "Title",
-                icon = Icons.Rounded.Search,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-            )
-            SearchBar(
-                query = it.queryOverview,
-                onQueryChange = { newQuery ->
-                    viewModel.search(
-                        queryOverview = newQuery, queryTitle = uiState.queryTitle
-                    )
-                },
-                hint = "Overview",
+                onQueryChange = { newQuery -> viewModel.search(queryTitle = newQuery) },
+                hint = stringResource(R.string.title),
                 icon = Icons.Rounded.Search,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,7 +57,7 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
                     if (it.data.isEmpty()) {
                         Center { modifier ->
                             Text(
-                                text = "Busque peliculas",
+                                text = stringResource(R.string.search_movies),
                                 style = TextStyle.Default,
                                 fontSize = 24.sp,
                                 modifier = modifier
@@ -94,14 +75,12 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
                         ) {
 
                             items(items = it.data, key = { movie -> movie.id }) { movie ->
-                                MovieCover(
-                                    movie = movie,
+                                MovieCover(movie = movie,
                                     modifier = Modifier
                                         .size(250.dp)
                                         .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
                                         .clip(RoundedCornerShape(8.dp))
-                                        .clickable { onMoviePressed(movie) }
-                                )
+                                        .clickable { onMoviePressed(movie) })
                             }
                         }
                     }
@@ -110,9 +89,7 @@ fun SearchScreen(onMoviePressed: (Movie) -> Unit) {
                 is SearchUiState.Error -> {
                     Center { modifier ->
                         Text(
-                            text = it.errorMessage,
-                            modifier = modifier,
-                            style = TextStyle.Default
+                            text = it.errorMessage, modifier = modifier, style = TextStyle.Default
                         )
 
                     }

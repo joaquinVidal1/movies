@@ -18,4 +18,6 @@
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_favs">Favs</string>
     <string name="search">Search</string>
+    <string name="search_movies">Busque peliculas</string>
+    <string name="title">Title</string>
 </resources>

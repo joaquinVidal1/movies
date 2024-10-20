@@ -40,6 +40,11 @@ interface MoviesService {
     @GET("movie/{movieId}/watch/providers")
     suspend fun getWatchProviders(@Path("movieId") movieId: Int): WatchProviderResponse
 
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("query") query: String
+    ): ApiPaginatedResponse<ApiMovie>
+
 
     companion object {
         const val DISCOVER_MOVIES_PATH = "discover/movie"
