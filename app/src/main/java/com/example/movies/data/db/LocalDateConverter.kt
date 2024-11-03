@@ -6,10 +6,9 @@ import com.example.movies.domain.utils.DateUtils.parseToString
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 object Converters {
     @TypeConverter
-    fun fromString(value: String): LocalDate {
+    fun fromString(value: String): LocalDate? {
         return value.fromBackendDateToLocalDate()
     }
 

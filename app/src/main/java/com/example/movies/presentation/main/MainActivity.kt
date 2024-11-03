@@ -3,8 +3,10 @@ package com.example.movies.presentation.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,11 +24,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MoviesTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MoviesApp()
@@ -36,7 +38,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesApp() {
     MoviesTheme {
@@ -44,7 +45,7 @@ fun MoviesApp() {
 
         Scaffold(bottomBar = {
             MoviesNavigationBar(
-                items = listOf(Screen.Home, Screen.Favs, Screen.Search),
+                items = listOf(Screen.Home, Screen.Favs),
                 navController = navController
             )
         }) {

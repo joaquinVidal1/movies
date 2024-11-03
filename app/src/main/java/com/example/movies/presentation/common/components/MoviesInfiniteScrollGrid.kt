@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -51,7 +50,7 @@ fun MoviesInfiniteScrollGrid(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         modifier = modifier,
-        contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
+        contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         state = listState,

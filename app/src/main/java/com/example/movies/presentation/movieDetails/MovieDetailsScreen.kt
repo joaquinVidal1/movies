@@ -1,6 +1,5 @@
 package com.example.movies.presentation.movieDetails
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -74,7 +73,6 @@ fun Content(
 ) {
 
     Column(verticalArrangement = Arrangement.SpaceBetween) {
-    Log.d("juako", "watch providers: ${movie.watchProviders}")
         MovieDetails(
             title = movie.title,
             peopleWatching = movie.peopleWatching,

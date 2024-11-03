@@ -3,6 +3,8 @@ package com.example.movies.presentation.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.Result
+import com.example.movies.domain.model.Movie
+import com.example.movies.domain.usecase.GetNextMoviesPageUseCase
 import com.example.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,11 +14,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchMoviesUseCase: SearchMoviesUseCase
+    private val searchMoviesUseCase: SearchMoviesUseCase,
+    private val getNextMoviesUseCase: GetNextMoviesPageUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Success(listOf(), "", ""))
+    private val _uiState =
+        MutableStateFlow<SearchUiState>(SearchUiState.Success(data = listOf(), query = ""))
     val uiState: StateFlow<SearchUiState> = _uiState
+
+    private val currentMovies: List<Movie>?
+        get() = (uiState.value as? SearchUiState.Success)?.data
 
     fun search(queryTitle: String) {
         _uiState.value = SearchUiState.Loading(queryTitle)
@@ -34,6 +41,26 @@ class SearchViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    suspend fun loadMoreMovies() {
+        _uiState.value = SearchUiState.Success(
+            data = currentMovies ?: emptyList(),
+            query = uiState.value.queryTitle,
+            smallLoading = true
+        )
+        val newMovies = getNextMoviesUseCase(Unit)
+        if (newMovies is Result.Error) {
+            newMovies.message?.let {
+                _uiState.value = SearchUiState.Error(
+                    errorMessage = "Please try again",
+                    query = uiState.value.queryTitle
+                )
+            }
+        } else {
+//            _uiState.value =
+//                SearchUiState.Success(currentMovies + (newMovies as Result.Success).value)
         }
     }
 }
