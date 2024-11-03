@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.sharp.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -40,7 +41,6 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     val viewModel: HomeViewModel = hiltViewModel()
     val context = LocalContext.current
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
-
 
     Column {
 

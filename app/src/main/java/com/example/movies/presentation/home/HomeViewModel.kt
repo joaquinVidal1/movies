@@ -11,6 +11,7 @@ import com.example.movies.domain.usecase.GetNextMoviesPageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -85,5 +86,5 @@ class HomeViewModel @Inject constructor(
     fun onCloseDialog() {
         _uiState.value = HomeUiState.Success(currentMovies)
     }
-
+    
 }

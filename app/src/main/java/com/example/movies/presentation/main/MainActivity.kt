@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,7 +27,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoviesTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().safeDrawingPadding(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MoviesApp()
@@ -45,8 +46,9 @@ fun MoviesApp() {
 
         Scaffold(bottomBar = {
             MoviesNavigationBar(
-                items = listOf(Screen.Home, Screen.Favs),
-                navController = navController
+                items = listOf(Screen.Home, Screen.Favs, Screen.Search),
+                navController = navController,
+                modifier = Modifier.fillMaxSize()
             )
         }) {
             MoviesNavHost(navController = navController, modifier = Modifier.padding(it))

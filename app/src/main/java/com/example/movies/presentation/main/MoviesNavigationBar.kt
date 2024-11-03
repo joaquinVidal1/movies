@@ -19,12 +19,12 @@ import com.example.movies.presentation.destinations.Screen
 
 @Composable
 fun MoviesNavigationBar(modifier: Modifier = Modifier, items: List<Screen>, navController: NavController) {
-    BottomNavigation(backgroundColor = Color.DarkGray) {
+    BottomNavigation(backgroundColor = Color.DarkGray, modifier = modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(imageVector = screen.icon, contentDescription = null, tint = Color.White) },
+                icon = screen.icon,
                 label = { Text(stringResource(screen.labelId), color = Color.White) },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
