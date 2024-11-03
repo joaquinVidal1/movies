@@ -48,7 +48,6 @@ fun MoviesApp() {
             MoviesNavigationBar(
                 items = listOf(Screen.Home, Screen.Favs, Screen.Search),
                 navController = navController,
-                modifier = Modifier.fillMaxSize()
             )
         }) {
             MoviesNavHost(navController = navController, modifier = Modifier.padding(it))

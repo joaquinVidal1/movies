@@ -9,6 +9,10 @@ import com.example.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,8 +29,15 @@ class SearchViewModel @Inject constructor(
     private val currentMovies: List<Movie>?
         get() = (uiState.value as? SearchUiState.Success)?.data
 
+    private val _searchHandler = uiState.map { it.queryTitle }.debounce(2000).onEach {
+        makeSearch(it)
+    }.launchIn(viewModelScope)
+
     fun search(queryTitle: String) {
-        _uiState.value = SearchUiState.Loading(queryTitle)
+        _uiState.value = SearchUiState.Loading(query = queryTitle)
+    }
+
+    private fun makeSearch(queryTitle: String) {
         viewModelScope.launch {
             _uiState.value = searchMoviesUseCase(
                 SearchMoviesUseCase.Params(queryTitle)
@@ -54,8 +65,7 @@ class SearchViewModel @Inject constructor(
         if (newMovies is Result.Error) {
             newMovies.message?.let {
                 _uiState.value = SearchUiState.Error(
-                    errorMessage = "Please try again",
-                    query = uiState.value.queryTitle
+                    errorMessage = "Please try again", query = uiState.value.queryTitle
                 )
             }
         } else {
