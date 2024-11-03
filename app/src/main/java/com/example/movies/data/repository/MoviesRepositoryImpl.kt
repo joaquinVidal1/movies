@@ -10,6 +10,8 @@ import com.example.movies.domain.model.MovieReviews
 import com.example.movies.domain.model.Page
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -46,10 +48,22 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovieDetails(movieId: Int): DetailsMovie {
-        val watchProviders = moviesService.getWatchProviders(movieId).results.let {
-            it["US"]?.rent ?: it["US"]?.buy ?: it["AR"]?.buy ?: listOf()
+        return coroutineScope {
+            val watchProvidersDeferred = async {
+                moviesService.getWatchProviders(movieId).results.let {
+                    it["US"]?.rent ?: it["US"]?.buy ?: it["AR"]?.buy ?: listOf()
+                }
+            }
+
+            val movieDetailsDeferred = async {
+                moviesService.getMovieDetails(movieId)
+            }
+
+            val watchProviders = watchProvidersDeferred.await()
+            val movieDetails = movieDetailsDeferred.await()
+
+            movieDetails.toModel(watchProviders)
         }
-        return moviesService.getMovieDetails(movieId).toModel(watchProviders)
     }
 
     override suspend fun deleteExpiredMovies() {
