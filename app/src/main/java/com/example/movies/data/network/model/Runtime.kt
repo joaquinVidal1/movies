@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Runtime(
-    @Json(name = "seconds") val seconds: Int
+    @Json(name = "seconds") val seconds: Long
 )

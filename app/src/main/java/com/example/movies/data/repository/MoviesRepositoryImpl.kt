@@ -5,6 +5,12 @@ import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.network.IMDBService
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
+import com.example.movies.data.network.model.budget
+import com.example.movies.data.network.model.duration
+import com.example.movies.data.network.model.genres
+import com.example.movies.data.network.model.releaseDate
+import com.example.movies.data.network.model.revenue
+import com.example.movies.data.network.model.voteAverage
 import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieReviews
@@ -16,6 +22,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.time.Duration
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -73,11 +80,30 @@ class MoviesRepositoryImpl @Inject constructor(
 
             val imdbDetails = imdbDetailsDeferred.await()
             resultFromTMDB.copy(
-
+                releaseDate = if (resultFromTMDB.releaseDate.isBefore(imdbDetails.releaseDate)) resultFromTMDB.releaseDate else imdbDetails.releaseDate,
+                duration = Duration.ofMinutes(
+                    resultFromTMDB.duration.toMinutes().getAverage(imdbDetails.duration.toMinutes())
+                ),
+                voteAverage = resultFromTMDB.voteAverage.getAverage(imdbDetails.voteAverage),
+                budget = resultFromTMDB.budget.getAverage(imdbDetails.budget),
+                revenue = resultFromTMDB.revenue.getAverage(imdbDetails.revenue),
+                genres = (resultFromTMDB.genres + imdbDetails.genres).filterDuplicate()
             )
-
-            movieDetails.toModel(watchProviders)
         }
+    }
+
+    private fun Long.getAverage(a: Long): Long = (this + a) / 2
+
+    private fun Float.getAverage(a: Float): Float = (this + a) / 2
+
+    private fun List<String>.filterDuplicate(): List<String> {
+        val set = LinkedHashSet<String>()
+        forEach { element ->
+            if (set.none { it.equals(element, ignoreCase = true) }) {
+                set.add(element)
+            }
+        }
+        return set.toList()
     }
 
     override suspend fun deleteExpiredMovies() {
