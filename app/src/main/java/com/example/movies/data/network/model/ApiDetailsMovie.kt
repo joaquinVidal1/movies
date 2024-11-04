@@ -2,6 +2,8 @@ package com.example.movies.data.network.model
 
 import com.example.movies.domain.model.DetailsMovie
 import com.squareup.moshi.Json
+import java.time.Duration
+import java.time.LocalDate
 
 data class ApiDetailsMovie(
     @Json(name = "original_language") val originalLanguage: String,
@@ -15,7 +17,7 @@ data class ApiDetailsMovie(
     @Json(name = "production_countries") val productionCountries: List<ProductionCountriesItem>?,
     @Json(name = "id") val id: Int,
     @Json(name = "vote_count") val voteCount: Int,
-    @Json(name = "budget") val budget: Int,
+    @Json(name = "budget") val budget: Long,
     @Json(name = "overview") val overview: String,
     @Json(name = "original_title") val originalTitle: String,
     @Json(name = "runtime") val runtime: Int,
@@ -41,6 +43,10 @@ data class ApiDetailsMovie(
             peopleWatching = popularity.toString().replace(".", "").toInt(),
             posterPath = MOVIE_IMAGE_BASE_URL_400 + posterPath,
             videoPreviewPath = MOVIE_IMAGE_BASE_URL_400 + backdropPath,
+            releaseDate = LocalDate.parse(releaseDate),
+            duration = Duration.ofMinutes(runtime.toLong()),
+            budget = budget,
+            revenue = revenue,
             watchProviders = watchProviders.map { it.copy(logoPath = MOVIE_IMAGE_BASE_URL_400 + it.logoPath) })
     }
 }

@@ -1,6 +1,5 @@
 package com.example.movies.data.repository
 
-import android.util.Log
 import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.db.model.DBFavedMovie
 import com.example.movies.data.network.IMDBService
@@ -64,20 +63,18 @@ class MoviesRepositoryImpl @Inject constructor(
 
             val imdbDetailsDeferred = async {
                 moviesService.getIMDBID(movieId).let {
-                    Log.d("juako", "id ${it.imdbId}")
-                    try {
-                        imdbService.getMovieDetails(it.imdbId)
-                    } catch (e: Exception) {
-                        Log.d("juako", "error: $e")
-                    }
+                    imdbService.getMovieDetails(it.imdbId)
                 }
             }
 
             val watchProviders = watchProvidersDeferred.await()
             val movieDetails = movieDetailsDeferred.await()
-            val imdbDetails = imdbDetailsDeferred.await()
+            val resultFromTMDB = movieDetails.toModel(watchProviders)
 
-            Log.d("juako", "details: $imdbDetails")
+            val imdbDetails = imdbDetailsDeferred.await()
+            resultFromTMDB.copy(
+
+            )
 
             movieDetails.toModel(watchProviders)
         }

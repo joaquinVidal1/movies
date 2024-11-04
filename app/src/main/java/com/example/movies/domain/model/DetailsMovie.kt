@@ -1,8 +1,10 @@
 package com.example.movies.domain.model
 
 import com.example.movies.data.network.model.WatchProvider
+import java.time.Duration
+import java.time.LocalDate
 
-class DetailsMovie(
+data class DetailsMovie(
     val id: Int,
     val title: String,
     val peopleWatching: Int,
@@ -11,5 +13,9 @@ class DetailsMovie(
     val overview: String,
     val posterPath: String,
     val videoPreviewPath: String,
-    val watchProviders: List<WatchProvider>
+    val watchProviders: List<WatchProvider>,
+    val releaseDate: LocalDate,
+    val duration: Duration,
+    val budget: Long,
+    val revenue: Long
 )
