@@ -73,7 +73,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
 //    navigation
-    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
 
     // Room for db
     val roomVersion = "2.5.0"

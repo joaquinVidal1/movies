@@ -1,7 +1,6 @@
 package com.example.movies.presentation.movieDetails.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -23,6 +22,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.data.network.model.WatchProvider
 import com.example.movies.presentation.theme.MoviesTheme
+import java.time.Duration
+import java.time.LocalDate
 
 @Composable
 fun MovieDetails(
@@ -36,6 +37,10 @@ fun MovieDetails(
     onBackPressed: () -> Unit,
     isFav: Boolean,
     onFavPressed: () -> Unit,
+    releaseDate: LocalDate,
+    duration: Duration,
+    budget: Long,
+    revenue: Long,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
@@ -47,13 +52,13 @@ fun MovieDetails(
         val movieData = createRef()
         val movieTitle = createRef()
 
-        MovieVideoPreview(onBackPressed = onBackPressed,
+        MovieVideoPreview(
+            onBackPressed = onBackPressed,
             moviePoster = videoPreviewPath,
-            modifier = Modifier
-                .constrainAs(videoPreview) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                },
+            modifier = Modifier.constrainAs(videoPreview) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+            },
             isFav = isFav,
             onFavPressed = onFavPressed
         )
@@ -90,6 +95,10 @@ fun MovieDetails(
             genres = genres,
             vote = voteAverage,
             watchProviders = watchProviders,
+            releaseDate = releaseDate,
+            duration = duration,
+            budget = budget,
+            revenue = revenue,
             modifier = Modifier
                 .wrapContentHeight()
                 .constrainAs(movieData) {
@@ -104,7 +113,8 @@ fun MovieDetails(
 @Composable
 fun MovieDetailsPreview() {
     MoviesTheme {
-        MovieDetails(title = "Justice League",
+        MovieDetails(
+            title = "Justice League",
             peopleWatching = 3292,
             genres = listOf("Action", "Adventure", "Fantast"),
             voteAverage = 9.8f,
@@ -113,7 +123,11 @@ fun MovieDetailsPreview() {
             onBackPressed = {},
             isFav = false,
             onFavPressed = {},
-            watchProviders = listOf()
+            watchProviders = listOf(),
+            releaseDate = LocalDate.now(),
+            duration = Duration.ofMinutes(15),
+            budget = 1341,
+            revenue = 35153,
         )
     }
 }

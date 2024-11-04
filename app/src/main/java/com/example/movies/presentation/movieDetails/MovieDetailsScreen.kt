@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,9 +53,10 @@ fun MovieDetailsScreen(onBackPressed: () -> Unit, onShowReviewsPressed: (Details
             }
 
             MovieDetailsUiState.Loading -> {
-                Box {
+                Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Center), color = colorResource(id = R.color.orange)
+                        modifier = Modifier.align(Center),
+                        color = colorResource(id = R.color.orange)
                     )
                 }
             }
@@ -84,6 +86,10 @@ fun Content(
             isFav = isFav,
             onFavPressed = onFavPressed,
             watchProviders = movie.watchProviders,
+            releaseDate = movie.releaseDate,
+            duration = movie.duration,
+            budget = movie.budget,
+            revenue = movie.revenue,
             modifier = Modifier
         )
 

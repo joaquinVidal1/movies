@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -34,11 +33,17 @@ import com.example.movies.domain.utils.addDotsToLongNumber
 import com.example.movies.presentation.common.components.VoteDecimalText
 import com.example.movies.presentation.movieDetails.MAX_VOTE
 import com.example.movies.presentation.theme.MoviesTheme
+import java.time.Duration
+import java.time.LocalDate
 
 @Composable
 fun MovieData(
     peopleWatching: Int,
     genres: List<String>,
+    releaseDate: LocalDate,
+    duration: Duration,
+    budget: Long,
+    revenue: Long,
     vote: Float,
     watchProviders: List<WatchProvider>,
     modifier: Modifier = Modifier
@@ -72,9 +77,11 @@ fun MovieData(
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        LazyRow(modifier = Modifier
-            .wrapContentHeight()
-            .wrapContentWidth()) {
+        LazyRow(
+            modifier = Modifier
+                .wrapContentHeight()
+                .wrapContentWidth()
+        ) {
             items(watchProviders) {
                 Image(
                     painter = rememberAsyncImagePainter(it.logoPath),
@@ -123,7 +130,11 @@ fun MovieDataPreview() {
                 peopleWatching = 3245,
                 genres = listOf("Action", "Fantasy", "Adventure"),
                 vote = 9.8f,
-                watchProviders = listOf()
+                watchProviders = listOf(),
+                releaseDate = LocalDate.now(),
+                duration = Duration.ofMinutes(15),
+                budget = 1341,
+                revenue = 35153,
             )
         }
     }
