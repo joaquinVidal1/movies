@@ -3,6 +3,7 @@ package com.example.movies.data.network
 import com.example.movies.data.network.model.ApiDetailsMovie
 import com.example.movies.data.network.model.ApiMovie
 import com.example.movies.data.network.model.ApiPaginatedResponse
+import com.example.movies.data.network.model.IMDBIDResponse
 import com.example.movies.data.network.model.MovieFavoriteResponse
 import com.example.movies.data.network.model.MovieFavouriteRequestBody
 import com.example.movies.data.network.model.WatchProviderResponse
@@ -44,6 +45,9 @@ interface MoviesService {
     suspend fun searchMovies(
         @Query("query") query: String
     ): ApiPaginatedResponse<ApiMovie>
+
+    @GET("movie/{movieId}/external_ids")
+    suspend fun getIMDBID(@Path("movieId") movieId: Int): IMDBIDResponse
 
 
     companion object {

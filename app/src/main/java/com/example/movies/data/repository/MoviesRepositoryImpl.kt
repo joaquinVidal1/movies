@@ -1,7 +1,9 @@
 package com.example.movies.data.repository
 
+import android.util.Log
 import com.example.movies.data.db.MoviesDao
 import com.example.movies.data.db.model.DBFavedMovie
+import com.example.movies.data.network.IMDBService
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.model.MOVIE_IMAGE_BASE_URL_400
 import com.example.movies.domain.model.DetailsMovie
@@ -22,6 +24,7 @@ import javax.inject.Singleton
 class MoviesRepositoryImpl @Inject constructor(
     private val moviesDao: MoviesDao,
     private val moviesService: MoviesService,
+    private val imdbService: IMDBService
 ) : MoviesRepository {
 
     override suspend fun getAllMovies(): List<Movie> {
@@ -59,8 +62,22 @@ class MoviesRepositoryImpl @Inject constructor(
                 moviesService.getMovieDetails(movieId)
             }
 
+            val imdbDetailsDeferred = async {
+                moviesService.getIMDBID(movieId).let {
+                    Log.d("juako", "id ${it.imdbId}")
+                    try {
+                        imdbService.getMovieDetails(it.imdbId)
+                    } catch (e: Exception) {
+                        Log.d("juako", "error: $e")
+                    }
+                }
+            }
+
             val watchProviders = watchProvidersDeferred.await()
             val movieDetails = movieDetailsDeferred.await()
+            val imdbDetails = imdbDetailsDeferred.await()
+
+            Log.d("juako", "details: $imdbDetails")
 
             movieDetails.toModel(watchProviders)
         }

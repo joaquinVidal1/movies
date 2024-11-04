@@ -33,7 +33,7 @@ object RetrofitFactory {
             .baseUrl(BASE_URL).client(client.build()).build()
     }
 
-    fun getSearchBuilder(
+    fun getIMDBBuilder(
     ): Retrofit {
         val client = OkHttpClient.Builder()
 
@@ -44,9 +44,8 @@ object RetrofitFactory {
         }
 
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
         return Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl("http://192.168.1.3:3001/").client(client.build()).build()
+            .baseUrl("https://imdb.iamidiotareyoutoo.com/").client(client.build()).build()
     }
 }
 

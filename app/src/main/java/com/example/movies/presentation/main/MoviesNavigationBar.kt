@@ -1,5 +1,6 @@
 package com.example.movies.presentation.main
 
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -19,7 +20,7 @@ import com.example.movies.presentation.destinations.Screen
 
 @Composable
 fun MoviesNavigationBar(modifier: Modifier = Modifier, items: List<Screen>, navController: NavController) {
-    BottomNavigation(backgroundColor = Color.DarkGray, modifier = modifier) {
+    BottomNavigation(backgroundColor = Color.DarkGray, modifier = Modifier.wrapContentHeight()) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { screen ->

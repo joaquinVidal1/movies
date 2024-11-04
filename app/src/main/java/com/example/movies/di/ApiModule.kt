@@ -1,5 +1,6 @@
 package com.example.movies.di
 
+import com.example.movies.data.network.IMDBService
 import com.example.movies.data.network.MoviesService
 import com.example.movies.data.network.RetrofitFactory
 import dagger.Module
@@ -15,5 +16,11 @@ class ApiModule {
     @Singleton
     fun provideMoviesApi(): MoviesService {
         return RetrofitFactory.getBuilder().create(MoviesService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIMDBService(): IMDBService {
+        return RetrofitFactory.getIMDBBuilder().create(IMDBService::class.java)
     }
 }

@@ -42,7 +42,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
     val context = LocalContext.current
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,7 +93,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
                     Toast.makeText(
                         context,
                         (uiState as HomeUiState.Error).errorMessage,
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
 
