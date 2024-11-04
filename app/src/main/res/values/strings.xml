@@ -20,4 +20,9 @@
     <string name="search">Search</string>
     <string name="search_movies">Busque peliculas</string>
     <string name="title">Title</string>
+    <string name="release_date">Release date: %1$s</string>
+    <string name="duration">Duration: %1$s hs, %2$s mins </string>
+    <string name="duration_mins">Duration: %1$s mins</string>
+    <string name="budget">Budget: US$ %1$s</string>
+    <string name="revenue">Revenue: US$ %1$s</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.movies.presentation.movieDetails.components
 
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,6 +76,32 @@ fun MovieData(
             style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
         )
 
+        Text(
+            text = stringResource(id = R.string.release_date, releaseDate.toString()),
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && duration.toHoursPart() > 0) {
+            Text(
+                text = stringResource(
+                    id = R.string.duration, duration.toHoursPart(), duration.toMinutesPart()
+                ), style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+            )
+        } else {
+            Text(
+                text = stringResource(
+                    id = R.string.duration_mins, duration.toMinutes()
+                ), style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+            )
+        }
+        Text(
+            text = stringResource(id = R.string.budget, budget),
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+        )
+        Text(
+            text = stringResource(id = R.string.revenue, revenue),
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray)
+        )
+
         Spacer(modifier = Modifier.size(16.dp))
 
         LazyRow(
@@ -128,11 +155,11 @@ fun MovieDataPreview() {
         Surface {
             MovieData(
                 peopleWatching = 3245,
-                genres = listOf("Action", "Fantasy", "Adventure"),
+                genres = listOf("Action", "Fantasy", "Adventure", "Action", ""),
                 vote = 9.8f,
                 watchProviders = listOf(),
                 releaseDate = LocalDate.now(),
-                duration = Duration.ofMinutes(15),
+                duration = Duration.ofMinutes(30),
                 budget = 1341,
                 revenue = 35153,
             )
