@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.sharp.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,10 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.common.components.MoviesInfiniteScrollGrid
-import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.HomeScreen(
     onMoviePressed: (Movie) -> Unit,
@@ -54,10 +51,8 @@ fun SharedTransitionScope.HomeScreen(
 
 
     Column {
-
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = stringResource(R.string.movies),
@@ -73,19 +68,17 @@ fun SharedTransitionScope.HomeScreen(
                 modifier = Modifier.padding(top = 24.dp, end = 16.dp)
             ) {
                 Icon(
-                    Icons.Sharp.Delete,
-                    contentDescription = stringResource(id = R.string.empty_db)
+                    Icons.Sharp.Delete, contentDescription = stringResource(id = R.string.empty_db)
                 )
             }
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
-
             MoviesInfiniteScrollGrid(
                 onMoviePressed = onMoviePressed,
                 loadMoreMovies = { viewModel.getMoreMovies() },
                 movies = uiState.data,
-                buffer = 4,
+                buffer = buffer,
                 animatedVisibilityScope = animatedVisibilityScope,
                 transitionKey = "Home"
             )
@@ -101,58 +94,14 @@ fun SharedTransitionScope.HomeScreen(
                         strokeWidth = 6.dp
                     )
                 }
-            }
 
                 is HomeUiState.Error -> {
                     Toast.makeText(
-                        context,
-                        (uiState as HomeUiState.Error).errorMessage,
-                        Toast.LENGTH_SHORT
+                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
                     ).show()
                 }
 
-                    items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
-                        MovieCover(movie = movie,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            modifier = Modifier
-                                .size(250.dp)
-                                .clickable { onMoviePressed(movie) }
-                                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                                .clip(RoundedCornerShape(8.dp)))
-                    }
-                }
-
-                when (uiState) {
-                    is HomeUiState.Loading -> {
-                        CircularProgressIndicator(
-                            color = colorResource(id = R.color.orange),
-                            modifier = Modifier
-                                .padding(bottom = 32.dp)
-                                .size(54.dp)
-                                .align(Alignment.BottomCenter),
-                            strokeWidth = 6.dp
-                        )
-                    }
-
-                    is HomeUiState.Error -> {
-                        Toast.makeText(
-                            context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    is HomeUiState.Success -> {}
-
-                    is HomeUiState.ShowEmptyDbDialog -> {
-                        ConfirmActionAlertDialog(title = stringResource(id = R.string.empty_db_dialog_title),
-                            message = stringResource(id = R.string.empty_db_dialog_message),
-                            icon = Icons.Default.Delete,
-                            onCloseDialog = { viewModel.onCloseDialog() }) {
-                            viewModel.onConfirmEmptyDatabase()
-                        }
-                    }
-
-                    null -> {}
-                }
+                else -> {}
             }
         }
     }

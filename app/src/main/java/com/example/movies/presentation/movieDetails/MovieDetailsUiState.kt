@@ -8,7 +8,7 @@ sealed class MovieDetailsUiState {
 
     internal class Error(val exception: Throwable) : MovieDetailsUiState()
 
-    internal class Loading(movie: DetailsMovie) : Data(movie)
+    internal object Loading : MovieDetailsUiState()
 
     sealed class Data(val movie: DetailsMovie): MovieDetailsUiState()
 }

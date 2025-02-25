@@ -40,12 +40,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesApp() {
     MoviesTheme {
         val navController = rememberNavController()
-
         Scaffold(bottomBar = {
             MoviesNavigationBar(
                 items = listOf(Screen.Home, Screen.Favs, Screen.Search),

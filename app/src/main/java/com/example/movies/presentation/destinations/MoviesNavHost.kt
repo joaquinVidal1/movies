@@ -36,7 +36,7 @@ fun MoviesNavHost(
             composable(
                 route = MovieDetailsDestination.routeWithArgs,
                 arguments = MovieDetailsDestination.arguments
-            ) { _ ->
+            ) {
                 MovieDetailsScreen(onBackPressed = { navController.navigateUp() },
                     animatedVisibilityScope = this,
                     onShowReviewsPressed = { movie ->

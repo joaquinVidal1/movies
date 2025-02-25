@@ -54,7 +54,6 @@ fun SharedTransitionScope.MovieDetailsScreen(
         when (state) {
             is MovieDetailsUiState.Success, is MovieDetailsUiState.Loading -> {
                 val movie = (state as? MovieDetailsUiState.Success)?.movie
-                    ?: (state as? MovieDetailsUiState.Loading)?.movie
                 if (state is MovieDetailsUiState.Loading) {
                     Center {
                         Box {
@@ -74,7 +73,6 @@ fun SharedTransitionScope.MovieDetailsScreen(
                     onShowReviewsPressed = onShowReviewsPressed,
                     onFavPressed = { viewModel.onFavoriteButtonPressed() },
                     movieId = viewModel.movieId,
-//                    launchedFrom = movie.id
                 )
             }
 
@@ -82,15 +80,6 @@ fun SharedTransitionScope.MovieDetailsScreen(
                 Toast.makeText(context, state.exception.message, Toast.LENGTH_SHORT).show()
                 onBackPressed()
             }
-
-//            MovieDetailsUiState.Loading -> {
-//                Box {
-//                    CircularProgressIndicator(
-//                        modifier = Modifier.align(Center),
-//                        color = colorResource(id = R.color.orange)
-//                    )
-//                }
-//            }
         }
     }
 
@@ -105,7 +94,6 @@ fun SharedTransitionScope.Content(
     onBackPressed: () -> Unit,
     onShowReviewsPressed: (DetailsMovie) -> Unit,
     onFavPressed: () -> Unit,
-//    launchedFrom: String,
     movieId: Int
 ) {
 
