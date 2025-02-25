@@ -37,7 +37,8 @@ import com.example.movies.presentation.search.components.Center
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.MovieDetailsScreen(
-    onBackPressed: () -> Unit, onShowReviewsPressed: (DetailsMovie) -> Unit,
+    onBackPressed: () -> Unit,
+    onShowReviewsPressed: (DetailsMovie) -> Unit,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
 
@@ -48,7 +49,9 @@ fun SharedTransitionScope.MovieDetailsScreen(
 
     uiState?.let { state ->
         when (state) {
-           is MovieDetailsUiState.Success,is MovieDetailsUiState.Loading -> {
+            is MovieDetailsUiState.Success, is MovieDetailsUiState.Loading -> {
+                val movie = (state as? MovieDetailsUiState.Success)?.movie
+                    ?: (state as? MovieDetailsUiState.Loading)?.movie
                 if (state is MovieDetailsUiState.Loading) {
                     Center {
                         Box {
@@ -61,14 +64,14 @@ fun SharedTransitionScope.MovieDetailsScreen(
                 }
 
                 Content(
-                    movie = state.movie,
+                    movie = movie,
                     onBackPressed = onBackPressed,
                     isFav = isFav,
                     animatedVisibilityScope = animatedVisibilityScope,
                     onShowReviewsPressed = onShowReviewsPressed,
                     onFavPressed = { viewModel.onFavoriteButtonPressed() },
                     movieId = viewModel.movieId,
-                    launchedFrom =
+//                    launchedFrom = movie.id
                 )
             }
 
@@ -99,7 +102,7 @@ fun SharedTransitionScope.Content(
     onBackPressed: () -> Unit,
     onShowReviewsPressed: (DetailsMovie) -> Unit,
     onFavPressed: () -> Unit,
-    launchedFrom: String,
+//    launchedFrom: String,
     movieId: Int
 ) {
 
@@ -115,9 +118,8 @@ fun SharedTransitionScope.Content(
             isFav = isFav,
             onFavPressed = onFavPressed,
             watchProviders = movie?.watchProviders,
-            modifier = Modifier,
             animatedVisibilityScope = animatedVisibilityScope,
-            transitionKey = "$launchedFrom/${movieId}"
+            transitionKey = "home/${movieId}"
         )
 
         Text(
