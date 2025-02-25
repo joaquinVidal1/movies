@@ -1,6 +1,7 @@
 package com.example.movies.presentation.movieReviews
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -8,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,6 +27,7 @@ import com.example.movies.presentation.home.HomeUiState
 import com.example.movies.presentation.movieReviews.components.MovieReview
 import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 4) {
 
@@ -49,49 +53,54 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
         }
     })
 
-    LazyColumn {
+    Scaffold { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding)) {
+            LazyColumn {
+                item {
+                    ReviewsHeader(
+                        onBackPressed = onBackPressed,
+                        posterPath = posterPath,
+                        amountOfReviews = uiState?.reviews?.amountOfReviews ?: 0,
+                        modifier = Modifier.wrapContentHeight()
+                    )
+                }
 
-        item {
-            ReviewsHeader(
-                onBackPressed = onBackPressed,
-                posterPath = posterPath,
-                amountOfReviews = uiState?.reviews?.amountOfReviews ?: 0,
-                modifier = Modifier.wrapContentHeight()
-            )
+                val itemsModifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
+
+                items(
+                    items = uiState?.reviews?.reviews ?: listOf(),
+                    key = { review -> review.id }) { review ->
+                    MovieReview(
+                        profileImage = review.authorDetails?.avatarPath,
+                        profileName = review.authorDetails?.name ?: review.author,
+                        review = review.content,
+                        modifier = itemsModifier
+                    )
+                }
+            }
+
+            when (uiState) {
+                is MovieReviewsUiState.Loading -> {
+                    CircularProgressIndicator(
+                        color = colorResource(id = R.color.orange),
+                        modifier = Modifier
+                            .padding(bottom = 32.dp)
+                            .size(54.dp),
+                        strokeWidth = 6.dp
+                    )
+                }
+
+                is MovieReviewsUiState.Error -> {
+                    Toast.makeText(
+                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is MovieReviewsUiState.Success -> {}
+
+                null -> {}
+            }
         }
-
-        val itemsModifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
-
-        items(items = uiState?.reviews?.reviews ?: listOf(), key = { review -> review.id }) { review ->
-            MovieReview(
-                profileImage = review.authorDetails?.avatarPath,
-                profileName = review.authorDetails?.name ?: review.author,
-                review = review.content,
-                modifier = itemsModifier
-            )
-        }
-    }
-
-    when (uiState) {
-        is MovieReviewsUiState.Loading -> {
-            CircularProgressIndicator(
-                color = colorResource(id = R.color.orange),
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .size(54.dp),
-                strokeWidth = 6.dp
-            )
-        }
-
-        is MovieReviewsUiState.Error -> {
-            Toast.makeText(
-                context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        is MovieReviewsUiState.Success -> {}
-
-        null -> {}
     }
 }
 

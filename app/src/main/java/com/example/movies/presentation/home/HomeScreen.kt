@@ -23,8 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.sharp.Delete
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +52,8 @@ import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.home.components.ConfirmActionAlertDialog
 import com.example.movies.presentation.home.components.MovieCover
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SharedTransitionScope.HomeScreen(
     onMoviePressed: (Movie) -> Unit,
@@ -78,82 +81,85 @@ fun SharedTransitionScope.HomeScreen(
         }
     })
 
-    Column {
-
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-
-            Text(
-                text = stringResource(R.string.movies),
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-                textAlign = TextAlign.Start,
-                color = Color.Black,
-                modifier = Modifier.padding(top = 24.dp, start = 16.dp)
-            )
-
-            IconButton(
-                onClick = { viewModel.onEmptyPressed() },
-                modifier = Modifier.padding(top = 24.dp, end = 16.dp)
+    Scaffold { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding)) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Icon(
-                    Icons.Sharp.Delete,
-                    contentDescription = stringResource(id = R.string.empty_db)
+                Text(
+                    text = stringResource(R.string.movies),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Start,
+                    color = Color.Black,
+                    modifier = Modifier.padding(top = 24.dp, start = 16.dp)
                 )
-            }
-        }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                state = listState,
-            ) {
-
-                items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
-                    MovieCover(movie = movie,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        modifier = Modifier
-                            .size(250.dp)
-                            .clickable { onMoviePressed(movie) }
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                            .clip(RoundedCornerShape(8.dp)))
-                }
-            }
-
-            when (uiState) {
-                is HomeUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = colorResource(id = R.color.orange),
-                        modifier = Modifier
-                            .padding(bottom = 32.dp)
-                            .size(54.dp)
-                            .align(Alignment.BottomCenter),
-                        strokeWidth = 6.dp
+                IconButton(
+                    onClick = { viewModel.onEmptyPressed() },
+                    modifier = Modifier.padding(top = 24.dp, end = 16.dp)
+                ) {
+                    Icon(
+                        Icons.Sharp.Delete,
+                        contentDescription = stringResource(id = R.string.empty_db)
                     )
                 }
+            }
 
-                is HomeUiState.Error -> {
-                    Toast.makeText(
-                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                    ).show()
-                }
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 150.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(top = 32.dp, start = 16.dp, end = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    state = listState,
+                ) {
 
-                is HomeUiState.Success -> {}
-
-                is HomeUiState.ShowEmptyDbDialog -> {
-                    ConfirmActionAlertDialog(title = stringResource(id = R.string.empty_db_dialog_title),
-                        message = stringResource(id = R.string.empty_db_dialog_message),
-                        icon = Icons.Default.Delete,
-                        onCloseDialog = { viewModel.onCloseDialog() }) {
-                        viewModel.onConfirmEmptyDatabase()
+                    items(items = uiState?.data ?: listOf(), key = { movie -> movie.id }) { movie ->
+                        MovieCover(movie = movie,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .clickable { onMoviePressed(movie) }
+                                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(8.dp)))
                     }
                 }
 
-                null -> {}
+                when (uiState) {
+                    is HomeUiState.Loading -> {
+                        CircularProgressIndicator(
+                            color = colorResource(id = R.color.orange),
+                            modifier = Modifier
+                                .padding(bottom = 32.dp)
+                                .size(54.dp)
+                                .align(Alignment.BottomCenter),
+                            strokeWidth = 6.dp
+                        )
+                    }
+
+                    is HomeUiState.Error -> {
+                        Toast.makeText(
+                            context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is HomeUiState.Success -> {}
+
+                    is HomeUiState.ShowEmptyDbDialog -> {
+                        ConfirmActionAlertDialog(title = stringResource(id = R.string.empty_db_dialog_title),
+                            message = stringResource(id = R.string.empty_db_dialog_message),
+                            icon = Icons.Default.Delete,
+                            onCloseDialog = { viewModel.onCloseDialog() }) {
+                            viewModel.onConfirmEmptyDatabase()
+                        }
+                    }
+
+                    null -> {}
+                }
             }
         }
     }
