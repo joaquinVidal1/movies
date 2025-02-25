@@ -45,22 +45,20 @@ fun SharedTransitionScope.MovieDetailsScreen(
 
     uiState?.let { state ->
         when (state) {
-            is MovieDetailsUiState.Success, is MovieDetailsUiState.Loading -> {
-                if (state is MovieDetailsUiState.Success || state is MovieDetailsUiState.Loading) {
-                    if (state is MovieDetailsUiState.Loading) {
-                        Box {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Center),
-                                color = colorResource(id = R.color.orange)
-                            )
-                        }
-                    }
-
+            is MovieDetailsUiState.Success -> {
                     Content(
                         movie = state.movie,
                         onBackPressed = onBackPressed,
                         onShowReviewsPressed = onShowReviewsPressed,
                         animatedVisibilityScope = animatedVisibilityScope
+                    )
+            }
+
+            is MovieDetailsUiState.Loading -> {
+                Box {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Center),
+                        color = colorResource(id = R.color.orange)
                     )
                 }
             }
