@@ -93,7 +93,7 @@ fun HomeScreen(onMoviePressed: (Movie) -> Unit) {
                     Toast.makeText(
                         context,
                         (uiState as HomeUiState.Error).errorMessage,
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
 
