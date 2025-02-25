@@ -51,10 +51,14 @@ android {
 }
 
 dependencies {
+    val activityVersion = "1.9.3"
+    val roomVersion = "2.5.0"
+    val moshiVersion = "1.8.0"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:$activityVersion")
+    implementation("androidx.activity:activity-ktx:$activityVersion")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -76,7 +80,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.1")
 
     // Room for db
-    val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
@@ -101,9 +104,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
     // moshi for parsing the JSON format
-    val moshi_version = "1.8.0"
-    implementation("com.squareup.moshi:moshi:$moshi_version")
-    implementation("com.squareup.moshi:moshi-kotlin:$moshi_version")
+    implementation("com.squareup.moshi:moshi:$moshiVersion")
+    implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
 
     //okHttp for logging networking
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
