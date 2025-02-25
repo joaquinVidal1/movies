@@ -1,5 +1,3 @@
-## :link: Issue reference:
-
 ## Description:
 
 <!---
