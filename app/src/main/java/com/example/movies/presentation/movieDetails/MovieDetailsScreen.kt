@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +34,7 @@ import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.presentation.movieDetails.components.GradientFloatingActionButton
 import com.example.movies.presentation.movieDetails.components.MovieDetails
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalSharedTransitionApi
 @Composable
 fun SharedTransitionScope.MovieDetailsScreen(
@@ -43,33 +47,35 @@ fun SharedTransitionScope.MovieDetailsScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.observeAsState()
 
-    uiState?.let { state ->
-        when (state) {
-            is MovieDetailsUiState.Success -> {
+    Scaffold { contentPadding ->
+        uiState?.let { state ->
+            when (state) {
+                is MovieDetailsUiState.Success -> {
                     Content(
                         movie = state.movie,
                         onBackPressed = onBackPressed,
                         onShowReviewsPressed = onShowReviewsPressed,
-                        animatedVisibilityScope = animatedVisibilityScope
-                    )
-            }
-
-            is MovieDetailsUiState.Loading -> {
-                Box {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Center),
-                        color = colorResource(id = R.color.orange)
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        modifier = Modifier.padding(contentPadding)
                     )
                 }
-            }
 
-            is MovieDetailsUiState.Error -> {
-                Toast.makeText(context, state.exception.message, Toast.LENGTH_SHORT).show()
-                onBackPressed()
+                is MovieDetailsUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(contentPadding)) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Center),
+                            color = colorResource(id = R.color.orange)
+                        )
+                    }
+                }
+
+                is MovieDetailsUiState.Error -> {
+                    Toast.makeText(context, state.exception.message, Toast.LENGTH_SHORT).show()
+                    onBackPressed()
+                }
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -78,11 +84,10 @@ fun SharedTransitionScope.Content(
     movie: DetailsMovie,
     onBackPressed: () -> Unit,
     onShowReviewsPressed: (DetailsMovie) -> Unit,
-    animatedVisibilityScope: AnimatedVisibilityScope
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier
 ) {
-
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
-
+    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = modifier) {
         MovieDetails(
             title = movie.title,
             peopleWatching = movie.peopleWatching,
@@ -91,7 +96,6 @@ fun SharedTransitionScope.Content(
             posterPath = movie.posterPath,
             videoPreviewPath = movie.videoPreviewPath,
             onBackPressed = onBackPressed,
-            modifier = Modifier,
             animatedVisibilityScope = animatedVisibilityScope
         )
 
