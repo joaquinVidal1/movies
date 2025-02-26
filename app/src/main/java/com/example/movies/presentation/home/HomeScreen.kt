@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,11 +84,13 @@ fun SharedTransitionScope.HomeScreen(
     })
 
     Scaffold { contentPadding ->
-        Column(modifier = Modifier.padding(contentPadding)) {
+        Column(
+            modifier = Modifier.padding(
+                top = contentPadding.calculateTopPadding()
+            )
+        ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(R.string.movies),
