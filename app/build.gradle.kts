@@ -5,7 +5,7 @@ plugins {
     id("kotlin-android")
     id("com.google.devtools.ksp") version "1.6.21-1.0.5"
     id("com.google.dagger.hilt.android")
-//    id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 // Allow references to generated code

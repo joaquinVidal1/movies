@@ -68,7 +68,7 @@ fun SharedTransitionScope.MovieCover(
         ) {
 
             Text(
-                text = movie.releaseDate.year.toString(),
+                text = movie.releaseYear.toString(),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Thin,
                 color = Color.White,

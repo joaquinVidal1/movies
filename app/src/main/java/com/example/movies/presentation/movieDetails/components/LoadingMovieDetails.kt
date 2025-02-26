@@ -19,7 +19,7 @@ private fun LoadingMovieDetailsPreview() {
             title = "Movie Title",
             poster = "https://image.tmdb.org/t/p/w500/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg",
             overview = "Movie Overview",
-            releaseDate = LocalDate.now(),
+            releaseYear = 2024,
             voteAverage = 7.5,
         )
     )

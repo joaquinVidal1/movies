@@ -20,11 +20,11 @@ data class DBMovie(
     val overview: String,
     val voteAverage: Double,
     val poster: String,
-    val releaseDate: LocalDate,
+    val releaseYear: Int,
     val pageNumber: Int
 ) {
     fun toModel(): Movie = Movie(
-        id, title, overview, voteAverage, poster, releaseDate
+        id, title, overview, voteAverage, poster, releaseYear
     )
 
 }
