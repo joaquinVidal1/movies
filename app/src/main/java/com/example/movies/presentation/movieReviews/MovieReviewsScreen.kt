@@ -3,12 +3,10 @@ package com.example.movies.presentation.movieReviews
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -16,16 +14,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.movies.R
-import com.example.movies.presentation.home.HomeUiState
+import com.example.movies.presentation.movieReviews.components.LoadingMovieReview
 import com.example.movies.presentation.movieReviews.components.MovieReview
 import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 
@@ -54,6 +48,13 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
         }
     }
 
+    LaunchedEffect(uiState) {
+        (uiState as? MovieReviewsUiState.Error)?.errorMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.onErrorShowed()
+        }
+    }
+
     Scaffold { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
             LazyColumn {
@@ -78,29 +79,12 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
                         modifier = itemsModifier
                     )
                 }
-            }
 
-            when (uiState) {
-                is MovieReviewsUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = colorResource(id = R.color.orange),
-                        modifier = Modifier
-                            .padding(bottom = 32.dp)
-                            .size(54.dp)
-                            .align(Alignment.CenterHorizontally),
-                        strokeWidth = 6.dp
-                    )
+                if (uiState is MovieReviewsUiState.Loading) {
+                    items(5) {
+                        LoadingMovieReview(modifier = itemsModifier)
+                    }
                 }
-
-                is MovieReviewsUiState.Error -> {
-                    Toast.makeText(
-                        context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is MovieReviewsUiState.Success -> {}
-
-                null -> {}
             }
         }
     }

@@ -8,6 +8,7 @@ import com.example.movies.domain.model.MovieReviews
 import com.example.movies.domain.usecase.GetMovieReviewsUseCase
 import com.example.movies.presentation.destinations.MovieReviewsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +27,7 @@ class MovieReviewsViewModel @Inject constructor(
     private var currentPage = 1
     private var totalPages: Int? = null
 
-    private val _uiState = MutableStateFlow<MovieReviewsUiState>(
+    private val _uiState: MutableStateFlow<MovieReviewsUiState> = MutableStateFlow<MovieReviewsUiState>(
         MovieReviewsUiState.Loading(
             MovieReviews(
                 amountOfReviews = 0, reviews = listOf(), totalPages = -1
@@ -47,6 +48,7 @@ class MovieReviewsViewModel @Inject constructor(
                         movieId = movieId, page = currentPage
                     )
                 )
+                delay(1000)
                 if (result is Result.Success) {
                     result.value.let { response ->
                         totalPages = response.totalPages
@@ -84,6 +86,16 @@ class MovieReviewsViewModel @Inject constructor(
                         MovieReviewsUiState.Success((result as Result.Success).value)
                     }
                 }
+            }
+        }
+    }
+
+    fun onErrorShowed() {
+        _uiState.update {
+            if (it is MovieReviewsUiState.Error) {
+                MovieReviewsUiState.Error(errorMessage = null, data = it.reviews)
+            } else {
+                it
             }
         }
     }
