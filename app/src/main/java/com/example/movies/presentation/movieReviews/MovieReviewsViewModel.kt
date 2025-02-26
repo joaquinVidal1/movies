@@ -48,6 +48,7 @@ class MovieReviewsViewModel @Inject constructor(
                         movieId = movieId, page = currentPage
                     )
                 )
+//                Delay for visual effect with skeleton
                 delay(1000)
                 if (result is Result.Success) {
                     result.value.let { response ->
