@@ -13,10 +13,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -32,10 +34,9 @@ import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 4) {
 
     val viewModel: MovieReviewsViewModel = hiltViewModel()
-    val uiState: MovieReviewsUiState? by viewModel.uiState.observeAsState()
+    val uiState: MovieReviewsUiState? by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
     val context = LocalContext.current
-
 
     val loadMore by remember {
         derivedStateOf {
@@ -47,11 +48,11 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
         }
     }
 
-    LaunchedEffect(key1 = loadMore, block = {
+    LaunchedEffect(loadMore) {
         if (loadMore) {
             viewModel.getMoreReviews()
         }
-    })
+    }
 
     Scaffold { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
@@ -85,7 +86,8 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
                         color = colorResource(id = R.color.orange),
                         modifier = Modifier
                             .padding(bottom = 32.dp)
-                            .size(54.dp),
+                            .size(54.dp)
+                            .align(Alignment.CenterHorizontally),
                         strokeWidth = 6.dp
                     )
                 }
