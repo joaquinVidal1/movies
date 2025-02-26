@@ -25,7 +25,7 @@ import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 4) {
+fun MovieReviewsScreen(onBackPressed: () -> Unit, buffer: Int = 4) {
 
     val viewModel: MovieReviewsViewModel = hiltViewModel()
     val uiState: MovieReviewsUiState? by viewModel.uiState.collectAsState()
@@ -61,7 +61,7 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
                 item {
                     ReviewsHeader(
                         onBackPressed = onBackPressed,
-                        posterPath = posterPath,
+                        posterPath = "posterPath",
                         amountOfReviews = uiState?.reviews?.amountOfReviews ?: 0,
                         modifier = Modifier.wrapContentHeight()
                     )

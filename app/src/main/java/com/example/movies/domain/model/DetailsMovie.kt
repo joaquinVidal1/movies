@@ -1,7 +1,5 @@
 package com.example.movies.domain.model
 
-import com.example.movies.data.network.model.Genre
-
 class DetailsMovie(
     val id: Int,
     val title: String,
@@ -11,4 +9,14 @@ class DetailsMovie(
     val overview: String,
     val posterPath: String,
     val videoPreviewPath: String,
+    val releaseYear: Int
+)
+
+fun DetailsMovie.toModel(): Movie = Movie(
+    id = id,
+    title = title,
+    overview = overview,
+    voteAverage = voteAverage.toDouble(),
+    poster = posterPath,
+    releaseYear = releaseYear
 )

@@ -10,6 +10,7 @@ import com.example.movies.data.Result
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.usecase.GetMovieDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +34,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
+            delay(2000)
             val movieDetails =
                 getMovieDetailsUSeCase(params = GetMovieDetailsUseCase.Params(movieId = movieId))
             _uiState.value = if (movieDetails is Result.Error) {

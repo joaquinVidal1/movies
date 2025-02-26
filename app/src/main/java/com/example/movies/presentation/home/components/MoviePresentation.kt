@@ -44,7 +44,7 @@ fun SharedTransitionScope.MovieCover(
 ) {
     Box(
         modifier = modifier.sharedElement(
-            state = rememberSharedContentState(key = "image/${movie.title}"),
+            state = rememberSharedContentState(key = "image/${movie.id}"),
             animatedVisibilityScope = animatedVisibilityScope,
             boundsTransform = { _, _ ->
                 tween(durationMillis = 1000)
