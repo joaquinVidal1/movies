@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.destinations.HomeDestination
 import com.example.movies.presentation.destinations.MovieDetailsDestination
 import com.example.movies.presentation.destinations.MovieReviewsDestination
@@ -35,8 +36,7 @@ class MainActivity : ComponentActivity() {
             MoviesTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     MoviesApp()
                 }
@@ -54,23 +54,18 @@ fun MoviesApp() {
             NavHost(
                 navController = navController, startDestination = HomeDestination.route
             ) {
-
                 composable(route = HomeDestination.route) {
                     HomeScreen(onMoviePressed = {
-                        navController.navigateToMovieDetails(it.id)
+                        navController.navigateToMovieDetails(it)
                     }, animatedVisibilityScope = this)
                 }
 
-                composable(
-                    route = MovieDetailsDestination.routeWithArgs,
-                    arguments = MovieDetailsDestination.arguments
-                ) { _ ->
+                composable<Movie> {
                     MovieDetailsScreen(
                         onBackPressed = { navController.navigateUp() },
                         onShowReviewsPressed = { movie ->
                             navController.navigateToReviews(
-                                movieId = movie.id,
-                                moviePoster = movie.posterPath
+                                movieId = movie.id, moviePoster = movie.posterPath
                             )
                         },
                         animatedVisibilityScope = this
@@ -100,8 +95,8 @@ fun GreetingPreview() {
     }
 }
 
-private fun NavHostController.navigateToMovieDetails(movieId: Int) {
-    this.navigate("${MovieDetailsDestination.route}/$movieId")
+private fun NavHostController.navigateToMovieDetails(movie: Movie) {
+    this.navigate(route = movie)
 }
 
 private fun NavHostController.navigateToReviews(movieId: Int, moviePoster: String) {

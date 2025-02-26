@@ -1,8 +1,10 @@
 package com.example.movies.domain.model
 
 import com.example.movies.data.db.model.DBMovie
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
+@Serializable
 data class Movie(
     val id: Int,
     val title: String,
