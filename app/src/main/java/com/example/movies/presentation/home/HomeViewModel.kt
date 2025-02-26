@@ -57,13 +57,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getMoreMovies() {
-        _uiState.value = HomeUiState.Loading(currentMovies)
-        val newMovies = getNextMoviesUseCase(Unit)
-        if (newMovies is Result.Error) {
-            newMovies.message?.let { _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it) }
-        } else {
-            _uiState.value = HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+    fun getMoreMovies() {
+        viewModelScope.launch {
+            _uiState.value = HomeUiState.Loading(currentMovies)
+            val newMovies = getNextMoviesUseCase(Unit)
+            if (newMovies is Result.Error) {
+                newMovies.message?.let {
+                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
+                }
+            } else {
+                _uiState.value =
+                    HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+            }
         }
     }
 

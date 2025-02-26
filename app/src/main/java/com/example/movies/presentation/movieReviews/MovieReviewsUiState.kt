@@ -7,8 +7,7 @@ sealed class MovieReviewsUiState(val reviews: MovieReviews) {
 
     internal class Success(data: MovieReviews) : MovieReviewsUiState(data)
 
-    internal class Error(val errorMessage: String, data: MovieReviews) : MovieReviewsUiState(data)
+    internal class Error(val errorMessage: String?, data: MovieReviews) : MovieReviewsUiState(data)
 
     internal class Loading(data: MovieReviews) : MovieReviewsUiState(data)
 }
-

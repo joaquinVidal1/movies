@@ -1,6 +1,7 @@
 package com.example.movies.presentation.movieReviews.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -40,7 +41,7 @@ fun MovieReview(profileImage: String?, profileName: String, review: String, modi
             contentScale = ContentScale.Crop,
         )
 
-        Column(modifier = Modifier.padding(start = 8.dp)) {
+        Column(modifier = Modifier.padding(start = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(text = profileName, color = Color.Black, style = MaterialTheme.typography.titleMedium)
             Text(text = review, color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
         }
