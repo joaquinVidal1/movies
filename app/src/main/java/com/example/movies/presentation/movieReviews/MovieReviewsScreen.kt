@@ -68,7 +68,6 @@ fun SharedTransitionScope.MovieReviewsScreen(
                     ReviewsHeader(
                         onBackPressed = onBackPressed,
                         posterPath = successUiState?.posterPath,
-                        videoPreviewPath = successUiState?.videoPreviewPath,
                         animatedVisibilityScope = animatedVisibilityScope,
                         movieId = uiState.reviews.movieId,
                         amountOfReviews = uiState.reviews.amountOfReviews,
@@ -79,7 +78,7 @@ fun SharedTransitionScope.MovieReviewsScreen(
                 val itemsModifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
 
                 items(
-                    items = uiState.reviews.reviews,
+                    items = uiState?.reviews?.reviews ?: listOf(),
                     key = { review -> review.id }) { review ->
                     MovieReview(
                         profileImage = review.authorDetails?.avatarPath,

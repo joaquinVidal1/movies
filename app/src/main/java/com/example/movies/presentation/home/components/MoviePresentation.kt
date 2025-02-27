@@ -44,7 +44,7 @@ fun SharedTransitionScope.MovieCover(
             ),
             contentDescription = stringResource(R.string.movie_poster),
             modifier = Modifier
-                .sharedElement(state = rememberSharedContentState(key = "image/${movie.title}"),
+                .sharedElement(state = rememberSharedContentState(key = "image/${movie.id}"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = { _, _ ->
                         tween(durationMillis = 1000)

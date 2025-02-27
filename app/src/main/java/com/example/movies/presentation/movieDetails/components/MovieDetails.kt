@@ -31,6 +31,7 @@ fun SharedTransitionScope.MovieDetails(
     peopleWatching: Int?,
     genres: List<String>?,
     voteAverage: Float,
+    movieId: Int,
     posterPath: String,
     videoPreviewPath: String?,
     onBackPressed: () -> Unit,
@@ -63,7 +64,7 @@ fun SharedTransitionScope.MovieDetails(
                     start.linkTo(parent.start, margin = 24.dp)
                     top.linkTo(videoPreview.bottom, margin = (-70).dp)
                 }
-                .sharedElement(state = rememberSharedContentState(key = "image/$title"),
+                .sharedElement(state = rememberSharedContentState(key = "image/$movieId"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = { _, _ ->
                         tween(durationMillis = 1000)
@@ -88,7 +89,8 @@ fun SharedTransitionScope.MovieDetails(
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = { _, _ ->
                         tween(durationMillis = 1000)
-                    }))
+                    })
+        )
 
         MovieData(peopleWatching = peopleWatching,
             genres = genres,

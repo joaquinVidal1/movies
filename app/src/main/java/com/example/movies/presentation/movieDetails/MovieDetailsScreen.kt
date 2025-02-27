@@ -104,7 +104,8 @@ fun SharedTransitionScope.Content(
             posterPath = movie.poster,
             videoPreviewPath = videoPreviewPath,
             onBackPressed = onBackPressed,
-            animatedVisibilityScope = animatedVisibilityScope
+            animatedVisibilityScope = animatedVisibilityScope,
+            movieId = movie.id
         )
 
         Text(
