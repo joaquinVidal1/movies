@@ -38,8 +38,9 @@ fun MovieVideoPreview(
                 ),
                 contentDescription = stringResource(R.string.movie_poster),
                 modifier = Modifier
+                    .aspectRatio(16/9f)
                     .fillMaxWidth()
-                    .aspectRatio(2 / 3f),
+                    .align(Alignment.TopCenter),
                 contentScale = ContentScale.FillWidth,
             )
             Image(
@@ -53,8 +54,9 @@ fun MovieVideoPreview(
         } else {
             ShimmerEffectBox(
                 modifier = Modifier
+                    .aspectRatio(16 / 9f)
                     .fillMaxWidth()
-                    .aspectRatio(2 / 3f)
+                    .align(Alignment.TopCenter)
             )
         }
 

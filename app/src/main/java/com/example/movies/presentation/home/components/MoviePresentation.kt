@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -32,32 +30,26 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.common.components.VoteDecimalText
-import java.time.LocalDate
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.MovieCover(
-    movie: Movie,
-    animatedVisibilityScope: AnimatedVisibilityScope,
-    modifier: Modifier = Modifier
+    movie: Movie, animatedVisibilityScope: AnimatedVisibilityScope, modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier.sharedElement(
-            state = rememberSharedContentState(key = "image/${movie.id}"),
-            animatedVisibilityScope = animatedVisibilityScope,
-            boundsTransform = { _, _ ->
-                tween(durationMillis = 1000)
-            }
-        ),
-        contentAlignment = Alignment.BottomStart
-    ) {
+    Box(contentAlignment = Alignment.BottomStart, modifier = modifier) {
         Image(
             painter = rememberAsyncImagePainter(
                 movie.poster, placeholder = painterResource(id = R.drawable.movieplaceholder)
             ),
             contentDescription = stringResource(R.string.movie_poster),
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier
+                .sharedElement(state = rememberSharedContentState(key = "image/${movie.title}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        tween(durationMillis = 1000)
+                    })
+                .fillMaxSize(),
             contentScale = ContentScale.Crop,
         )
 
@@ -74,12 +66,15 @@ fun SharedTransitionScope.MovieCover(
                 color = Color.White,
             )
 
-            Text(
-                text = movie.title,
+            Text(text = movie.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+                color = Color.White,
+                modifier = Modifier.sharedElement(state = rememberSharedContentState(key = "title/${movie.title}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        tween(durationMillis = 1000)
+                    }))
         }
 
         VoteDecimalText(

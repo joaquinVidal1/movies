@@ -83,7 +83,12 @@ fun SharedTransitionScope.MovieDetails(
                     start.linkTo(moviePoster.end, margin = 16.dp)
                     end.linkTo(parent.end, margin = 8.dp)
                     width = Dimension.fillToConstraints
-                })
+                }
+                .sharedElement(state = rememberSharedContentState(key = "title/${title}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        tween(durationMillis = 1000)
+                    }))
 
         MovieData(peopleWatching = peopleWatching,
             genres = genres,
