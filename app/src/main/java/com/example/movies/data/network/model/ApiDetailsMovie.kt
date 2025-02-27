@@ -39,7 +39,7 @@ data class ApiDetailsMovie(
             overview = overview,
             voteAverage = voteAverage,
             peopleWatching = popularity.toString().replace(".", "").toInt(),
-            posterPath = MOVIE_IMAGE_BASE_URL_400 + posterPath,
+            posterPath = MOVIE_IMAGE_BASE_URL + posterPath,
             videoPreviewPath = MOVIE_IMAGE_BASE_URL_400 + backdropPath,
             releaseYear = LocalDate.parse(releaseDate).year
         )

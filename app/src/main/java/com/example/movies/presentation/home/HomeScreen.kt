@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -77,11 +75,11 @@ fun SharedTransitionScope.HomeScreen(
         }
     }
 
-    LaunchedEffect(key1 = loadMore, block = {
+    LaunchedEffect(loadMore) {
         if (loadMore) {
             viewModel.getMoreMovies()
         }
-    })
+    }
 
     Scaffold { contentPadding ->
         Column(
@@ -146,9 +144,11 @@ fun SharedTransitionScope.HomeScreen(
                     }
 
                     is HomeUiState.Error -> {
-                        Toast.makeText(
-                            context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                        ).show()
+                        (uiState as? HomeUiState.Error)?.errorMessage?.let {
+                            Toast.makeText(
+                                context, it, Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
 
                     is HomeUiState.Success -> {}

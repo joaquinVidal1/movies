@@ -11,6 +11,7 @@ import com.example.movies.domain.usecase.GetNextMoviesPageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,23 +35,32 @@ class HomeViewModel @Inject constructor(
 
     private fun updateMovies() {
         viewModelScope.launch {
-            val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
-            val movies = getAllMoviesUseCase(Unit)
-            when {
-                resultOfDeleting is Result.Error -> resultOfDeleting.message?.let {
-                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
-                }
+            _uiState.update {
+                val resultOfDeleting = deleteExpiredMoviesUseCase(Unit)
+                val movies = getAllMoviesUseCase(Unit)
+                when {
+                    resultOfDeleting is Result.Error -> resultOfDeleting.message.let {
+                        HomeUiState.Error(data = currentMovies, errorMessage = it)
+                    }
 
-                movies is Result.Error -> movies.message?.let {
-                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
-                }
+                    movies is Result.Error -> movies.message.let {
+                        HomeUiState.Error(data = currentMovies, errorMessage = it)
+                    }
 
-                else -> {
-                    val moviesList = (movies as Result.Success).value
-                    if (moviesList.isEmpty()) {
-                        getMoreMovies()
-                    } else {
-                        _uiState.value = HomeUiState.Success(data = moviesList)
+                    else -> {
+                        val moviesList = (movies as Result.Success).value
+                        if (moviesList.isEmpty()) {
+                            val newMovies = getNextMoviesUseCase(Unit)
+                            if (newMovies is Result.Error) {
+                                HomeUiState.Error(
+                                    data = currentMovies, errorMessage = newMovies.message
+                                )
+                            } else {
+                                HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+                            }
+                        } else {
+                            HomeUiState.Success(data = moviesList)
+                        }
                     }
                 }
             }
@@ -59,15 +69,14 @@ class HomeViewModel @Inject constructor(
 
     fun getMoreMovies() {
         viewModelScope.launch {
-            _uiState.value = HomeUiState.Loading(currentMovies)
-            val newMovies = getNextMoviesUseCase(Unit)
-            if (newMovies is Result.Error) {
-                newMovies.message?.let {
-                    _uiState.value = HomeUiState.Error(data = currentMovies, errorMessage = it)
-                }
-            } else {
-                _uiState.value =
+            _uiState.update {
+                _uiState.value = HomeUiState.Loading(currentMovies)
+                val newMovies = getNextMoviesUseCase(Unit)
+                if (newMovies is Result.Error) {
+                    HomeUiState.Error(data = currentMovies, errorMessage = newMovies.message)
+                } else {
                     HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+                }
             }
         }
     }
