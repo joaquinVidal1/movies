@@ -86,28 +86,6 @@ class MovieReviewsViewModel @Inject constructor(
                     )
                 )
             }
-
-//            _uiState.update {
-//                val result = getMovieReviewsUseCase(
-//                    GetMovieReviewsUseCase.Params(
-//                        movieId = movieId, page = currentPage
-//                    )
-//                )
-//                Delay for visual effect with skeleton
-//                delay(1000)
-//                if (result is Result.Success) {
-//                    result.value.let { response ->
-//                        totalPages = response.totalPages
-//                        currentPage++
-//                        MovieReviewsUiState.Success(response)
-//                    }
-//                } else {
-//                    MovieReviewsUiState.Error(
-//                        errorMessage = (result as? Result.Error)?.message,
-//                        data = MovieReviews(0, listOf(), -1)
-//                    )
-//                }
-//            }
         }
     }
 
