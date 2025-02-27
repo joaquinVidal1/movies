@@ -111,7 +111,7 @@ fun SharedTransitionScope.Content(
         Text(
             text = movie.overview,
             style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
         )
 
         Spacer(Modifier.weight(1f))
