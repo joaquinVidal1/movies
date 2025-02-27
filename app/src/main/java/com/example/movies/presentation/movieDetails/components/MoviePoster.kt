@@ -2,6 +2,7 @@ package com.example.movies.presentation.movieDetails.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,20 +21,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.R
+import com.example.movies.presentation.movieReviews.components.ShimmerEffectBox
 import com.example.movies.presentation.theme.MoviesTheme
 
 @Composable
-fun MovieVideoPreview(onBackPressed: () -> Unit, moviePoster: String, modifier: Modifier = Modifier) {
+fun MovieVideoPreview(
+    onBackPressed: () -> Unit,
+    moviePoster: String?,
+    modifier: Modifier = Modifier
+) {
     Box(modifier = modifier) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                moviePoster, placeholder = painterResource(id = R.drawable.movieplaceholder)
-            ),
-            contentDescription = stringResource(R.string.movie_poster),
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentScale = ContentScale.FillWidth,
-        )
+        if (moviePoster != null) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    moviePoster, placeholder = painterResource(id = R.drawable.movieplaceholder)
+                ),
+                contentDescription = stringResource(R.string.movie_poster),
+                modifier = Modifier
+                    .aspectRatio(16/9f)
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter),
+                contentScale = ContentScale.FillWidth,
+            )
+            Image(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.orange)),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(32.dp)
+            )
+        } else {
+            ShimmerEffectBox(
+                modifier = Modifier
+                    .aspectRatio(16 / 9f)
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
 
         BackButton(
             color = Color.White,
@@ -43,16 +68,6 @@ fun MovieVideoPreview(onBackPressed: () -> Unit, moviePoster: String, modifier: 
         ) {
             onBackPressed()
         }
-
-        Image(
-            imageVector = Icons.Filled.PlayArrow,
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(colorResource(id = R.color.orange)),
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(32.dp)
-        )
-
     }
 }
 

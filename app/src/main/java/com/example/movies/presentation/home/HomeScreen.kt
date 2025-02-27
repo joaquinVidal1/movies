@@ -75,18 +75,20 @@ fun SharedTransitionScope.HomeScreen(
         }
     }
 
-    LaunchedEffect(key1 = loadMore, block = {
+    LaunchedEffect(loadMore) {
         if (loadMore) {
             viewModel.getMoreMovies()
         }
-    })
+    }
 
     Scaffold { contentPadding ->
-        Column(modifier = Modifier.padding(contentPadding)) {
+        Column(
+            modifier = Modifier.padding(
+                top = contentPadding.calculateTopPadding()
+            )
+        ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(R.string.movies),
@@ -142,9 +144,11 @@ fun SharedTransitionScope.HomeScreen(
                     }
 
                     is HomeUiState.Error -> {
-                        Toast.makeText(
-                            context, (uiState as HomeUiState.Error).errorMessage, Toast.LENGTH_SHORT
-                        ).show()
+                        (uiState as? HomeUiState.Error)?.errorMessage?.let {
+                            Toast.makeText(
+                                context, it, Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
 
                     is HomeUiState.Success -> {}

@@ -1,6 +1,7 @@
 package com.example.movies.presentation.movieDetails
 
 import com.example.movies.domain.model.DetailsMovie
+import com.example.movies.domain.model.Movie
 
 sealed class MovieDetailsUiState {
 
@@ -8,6 +9,6 @@ sealed class MovieDetailsUiState {
 
     internal class Error(val exception: Throwable) : MovieDetailsUiState()
 
-    internal object Loading : MovieDetailsUiState()
+    internal class Loading(val movie: Movie) : MovieDetailsUiState()
 
 }

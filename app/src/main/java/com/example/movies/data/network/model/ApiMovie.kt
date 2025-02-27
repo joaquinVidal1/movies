@@ -25,7 +25,7 @@ data class ApiMovie(
         id = id,
         title = title,
         overview = overview,
-        releaseDate = releaseDate?.fromBackendDateToLocalDate() ?: LocalDate.now(),
+        releaseYear = releaseDate?.fromBackendDateToLocalDate()?.year ?: LocalDate.now().year,
         voteAverage = voteAverage,
         poster = MOVIE_IMAGE_BASE_URL + posterPath,
     )

@@ -3,7 +3,11 @@ package com.example.movies.data
 sealed class Result<out T> {
     data class Success<out R>(val value: R) : Result<R>()
     data class Error(
-        val message: String?,
-        val throwable: Throwable?
+        val message: String?, val throwable: Throwable?
     ) : Result<Nothing>()
+}
+
+fun <T> Result<T>.getOrNull(): T? = when (this) {
+    is Result.Success -> value
+    else -> null
 }

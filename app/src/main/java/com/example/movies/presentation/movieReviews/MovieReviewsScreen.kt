@@ -1,6 +1,9 @@
 package com.example.movies.presentation.movieReviews
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -23,12 +26,14 @@ import com.example.movies.presentation.movieReviews.components.LoadingMovieRevie
 import com.example.movies.presentation.movieReviews.components.MovieReview
 import com.example.movies.presentation.movieReviews.components.ReviewsHeader
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: Int = 4) {
+fun SharedTransitionScope.MovieReviewsScreen(
+    onBackPressed: () -> Unit, buffer: Int = 4, animatedVisibilityScope: AnimatedVisibilityScope
+) {
 
     val viewModel: MovieReviewsViewModel = hiltViewModel()
-    val uiState: MovieReviewsUiState? by viewModel.uiState.collectAsState()
+    val uiState: MovieReviewsUiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
     val context = LocalContext.current
 
@@ -56,13 +61,16 @@ fun MovieReviewsScreen(onBackPressed: () -> Unit, posterPath: String, buffer: In
     }
 
     Scaffold { contentPadding ->
+        val successUiState = (uiState as? MovieReviewsUiState.Success)
         Column(modifier = Modifier.padding(contentPadding)) {
             LazyColumn {
                 item {
                     ReviewsHeader(
                         onBackPressed = onBackPressed,
-                        posterPath = posterPath,
-                        amountOfReviews = uiState?.reviews?.amountOfReviews ?: 0,
+                        posterPath = successUiState?.posterPath,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        movieId = uiState.reviews.movieId,
+                        amountOfReviews = uiState.reviews.amountOfReviews,
                         modifier = Modifier.wrapContentHeight()
                     )
                 }
