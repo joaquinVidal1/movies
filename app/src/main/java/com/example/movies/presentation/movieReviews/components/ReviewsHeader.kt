@@ -1,5 +1,8 @@
 package com.example.movies.presentation.movieReviews.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,9 +31,16 @@ import com.example.movies.R
 import com.example.movies.presentation.movieDetails.components.BackButton
 import com.example.movies.presentation.theme.MoviesTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ReviewsHeader(
-    onBackPressed: () -> Unit, posterPath: String, amountOfReviews: Int, modifier: Modifier = Modifier
+fun SharedTransitionScope.ReviewsHeader(
+    onBackPressed: () -> Unit,
+    posterPath: String?,
+    videoPreviewPath: String?,
+    amountOfReviews: Int,
+    movieId: Int,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         BackButton(
@@ -66,17 +76,11 @@ fun ReviewsHeader(
                 .clip(RoundedCornerShape(4.dp))
                 .height(150.dp)
                 .wrapContentWidth()
+                .sharedElement(
+                    state = rememberSharedContentState(key = "image/${movieId}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
         )
 
-    }
-}
-
-@Composable
-@Preview
-fun ReviewsHeaderPreview() {
-    MoviesTheme {
-        Surface {
-            ReviewsHeader(onBackPressed = { }, posterPath = "", amountOfReviews = 10)
-        }
     }
 }

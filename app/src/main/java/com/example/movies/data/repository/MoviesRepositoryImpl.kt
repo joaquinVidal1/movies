@@ -26,10 +26,8 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getNextMoviesPage(): List<Movie> {
         return withContext(Dispatchers.IO) {
-
             val savedPages = moviesDao.getPageNumbers()
             val nextPageNumber = findFirstGap(savedPages)
-
             val response = moviesService.getMovies(page = nextPageNumber)
             val newPage = Page(
                 number = response.page,
@@ -58,7 +56,7 @@ class MoviesRepositoryImpl @Inject constructor(
             amountOfReviews = response.totalResults, reviews = response.results.map {
                 val avatarPath = it.authorDetails?.avatarPath
                 it.copy(authorDetails = it.authorDetails?.copy(avatarPath = MOVIE_IMAGE_BASE_URL_400 + avatarPath))
-            }, totalPages = response.totalPages
+            }, totalPages = response.totalPages, movieId = movieId
         )
     }
 

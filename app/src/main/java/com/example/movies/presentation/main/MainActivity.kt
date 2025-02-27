@@ -72,7 +72,10 @@ fun MoviesApp() {
                     route = MovieReviewsDestination.routeWithArgs,
                     arguments = MovieReviewsDestination.arguments
                 ) {
-                    MovieReviewsScreen(onBackPressed = { navController.navigateUp() })
+                    MovieReviewsScreen(
+                        onBackPressed = { navController.navigateUp() },
+                        animatedVisibilityScope = this
+                    )
                 }
             }
         }

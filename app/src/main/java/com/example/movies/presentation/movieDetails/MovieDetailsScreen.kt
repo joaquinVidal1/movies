@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movies.R
-import com.example.movies.domain.model.DetailsMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.toModel
 import com.example.movies.presentation.movieDetails.components.GradientFloatingActionButton
@@ -37,7 +36,7 @@ import com.example.movies.presentation.movieDetails.components.MovieDetails
 fun SharedTransitionScope.MovieDetailsScreen(
     onBackPressed: () -> Unit,
     onShowReviewsPressed: (Int) -> Unit,
-    animatedVisibilityScope: AnimatedVisibilityScope
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
 
     val viewModel: MovieDetailsViewModel = hiltViewModel()

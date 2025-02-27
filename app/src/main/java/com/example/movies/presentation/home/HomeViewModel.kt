@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +26,9 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading(listOf()))
     val uiState: StateFlow<HomeUiState> = _uiState
+
+    private val fetchMoviesMutex: Mutex = Mutex()
+    private var lastLoadedPage = 1
 
     private val currentMovies: List<Movie>
         get() = uiState.value.data
@@ -69,14 +73,17 @@ class HomeViewModel @Inject constructor(
 
     fun getMoreMovies() {
         viewModelScope.launch {
-            _uiState.update {
+            if (fetchMoviesMutex.tryLock()) {
                 _uiState.value = HomeUiState.Loading(currentMovies)
-                val newMovies = getNextMoviesUseCase(Unit)
-                if (newMovies is Result.Error) {
-                    HomeUiState.Error(data = currentMovies, errorMessage = newMovies.message)
-                } else {
-                    HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+                _uiState.update {
+                    val newMovies = getNextMoviesUseCase(Unit)
+                    if (newMovies is Result.Error) {
+                        HomeUiState.Error(data = currentMovies, errorMessage = newMovies.message)
+                    } else {
+                        HomeUiState.Success(currentMovies + (newMovies as Result.Success).value)
+                    }
                 }
+                fetchMoviesMutex.unlock()
             }
         }
     }
