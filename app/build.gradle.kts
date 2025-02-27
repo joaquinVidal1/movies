@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.ui:ui-test-junit4-android:1.7.8")
     val activityVersion = "1.9.3"
     val roomVersion = "2.5.0"
     val moshiVersion = "1.8.0"
@@ -98,7 +99,6 @@ dependencies {
     kapt("com.squareup.inject:assisted-inject-processor-dagger2:0.5.2")
 
 
-
     // retrofit for networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
@@ -118,4 +118,11 @@ dependencies {
 
     implementation("androidx.compose.animation:animation:1.7.0-alpha07")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:2023.03.00")
+    // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
+    debugImplementation("androidx.compose.ui:ui-test-manifest:2023.03.00")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    // ...with Kotlin.
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 }
