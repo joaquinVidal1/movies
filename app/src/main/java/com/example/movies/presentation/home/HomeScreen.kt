@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -127,7 +128,8 @@ fun SharedTransitionScope.HomeScreen(
                                 .size(250.dp)
                                 .clickable { onMoviePressed(movie) }
                                 .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-                                .clip(RoundedCornerShape(8.dp)))
+                                .clip(RoundedCornerShape(8.dp))
+                                .testTag("MovieItem"))
                     }
                 }
 
